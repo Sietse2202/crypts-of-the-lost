@@ -3,3 +3,4 @@ build:
 
 run:
     cargo run --manifest-path crates/server/Cargo.toml
+    
