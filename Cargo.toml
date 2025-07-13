@@ -7,3 +7,9 @@ description = "Multiplayer dungeon MMO"
 repository = "https://github.com/Sietse2202/crypts-of-the-lost"
 
 [dependencies]
+
+[workspace]
+members = [
+    "crates/xtask"
+]
+resolver = "2"
