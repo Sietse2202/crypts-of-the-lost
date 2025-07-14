@@ -45,7 +45,7 @@ jobs:
 
       - name: Install taplo and typos
         run: |
-          cargo binstall typlo-cli typos-cli --no-confirm
+          cargo binstall taplo-cli typos-cli --no-confirm
 
       - name: Run checks
         id: check
