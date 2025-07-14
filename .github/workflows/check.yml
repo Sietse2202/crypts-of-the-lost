@@ -40,12 +40,14 @@ jobs:
             ${{ runner.os }}-cargo-target-${{ hashFiles('**/Cargo.lock') }}-
             ${{ runner.os }}-cargo-target-
 
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@main
+
       - name: Install typos
         uses: crate-ci/typos@v1.34.0
 
       - name: Install taplo
-        run: |
-          curl -fsSL https://github.com/tamasfe/taplo/releases/latest/download/taplo-linux-x86_64.gz | gzip -d - | sudo install -m 755 /dev/stdin /usr/local/bin/taplo
+        run: cargo binstall taplo --no-confirm
 
       - name: Run checks
         id: check
