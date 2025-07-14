@@ -27,4 +27,4 @@ jobs:
             ${{ runner.os }}-cargo-
 
       - name: Run tests debug
-        run: cargo test --verbose
+        run: cargo xtask test
