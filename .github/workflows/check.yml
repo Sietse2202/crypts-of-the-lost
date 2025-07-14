@@ -32,4 +32,17 @@ jobs:
           cargo install typos-cli taplo-cli --locked --force
 
       - name: Run checks
+        id: check
+        continue-on-error: true
         run: cargo xtask check
+
+      - name: How to fix failures
+        if: steps.check.outcome == 'failure'
+        run: |
+          echo "The automated check failed!"
+          echo "To fix, run locally:"
+          echo ""
+          echo "  cargo xtask check"
+          echo ""
+          echo "and push the resulting fixes back to this branch."
+          exit 1
