@@ -26,5 +26,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-
 
+      - name: Install nextest
+        run: cargo install cargo-nextest --locked --force
+
       - name: Run tests debug
         run: cargo xtask test
