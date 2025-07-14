@@ -23,6 +23,7 @@ jobs:
             ~/.cargo/bin
             ~/.cargo/registry
             ~/.cargo/git
+            target
           key: cargo-tools-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             cargo-tools-${{ runner.os }}-
