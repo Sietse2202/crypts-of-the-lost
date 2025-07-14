@@ -28,7 +28,7 @@ jobs:
             cargo-tools-${{ runner.os }}-
 
       - name: Install tools
-        uses: |
+        run: |
           cargo install typos-cli taplo-cli --locked --force
 
       - name: Run checks
