@@ -26,8 +26,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-git-registry-
 
-      - uses: actions/cache@v4
-        name: Cache target dir
+      - name: Cache target dir
+        uses: actions/cache@v4
         with:
           path: target
           key: ${{ runner.os }}-cargo-target-${{ hashFiles('**/Cargo.lock') }}-${{ hashFiles('**/*.rs') }}
