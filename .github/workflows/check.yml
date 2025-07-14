@@ -17,17 +17,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache cargo binaries
-        uses: actions/cache@v4
+      - name: Cache cargo git and registry
+      - uses: actions/cache@v4
         with:
           path: |
-            ~/.cargo/bin
             ~/.cargo/registry
             ~/.cargo/git
-            target
-          key: cargo-tools-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-git-registry-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
-            cargo-tools-${{ runner.os }}-
+            ${{ runner.os }}-cargo-git-registry-
+
+      - uses: actions/cache@v4
+        name: Cache target dir
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-target-${{ hashFiles('**/Cargo.lock') }}-${{ hashFiles('**/*.rs') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-target-${{ hashFiles('**/Cargo.lock') }}-
+            ${{ runner.os }}-cargo-target-
 
       - name: Install typos
         uses: crate-ci/typos@v1.34.0
