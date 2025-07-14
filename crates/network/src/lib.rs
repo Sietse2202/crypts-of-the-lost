@@ -1,8 +1,6 @@
-//! # Server
-//! This binary crate exists as the package containing the entire server side logic.
-//! This includes but is not limited to:
-//! - CLI logic
-//! - The calling of functions from other crates in the workspace
+//! # Networking
+//! This crate handles all networking code between the client and the server, this also
+//! specifies the interface they use to communicate.
 //!
 //! ---
 //!
@@ -22,12 +20,3 @@
 //! You should have received a copy of the GNU Affero General Public License
 //! along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //! ```
-
-use clap::Parser;
-
-#[derive(Parser, Debug, Copy, Clone, PartialEq, Ord, PartialOrd, Eq, Hash, Default)]
-struct Cli {}
-
-fn main() {
-    let _args = Cli::parse();
-}
