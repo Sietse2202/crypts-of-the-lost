@@ -95,7 +95,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         SubCommands::Fmt => {
             let fmt = Command::new("cargo")
-                .args(["fmt", "--", "--all", "--", "--color=always"])
+                .args(["fmt", "--all", "--", "--"])
                 .status()?;
 
             if !fmt.success() {
