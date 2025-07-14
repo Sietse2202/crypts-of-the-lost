@@ -27,7 +27,8 @@ jobs:
             ${{ runner.os }}-cargo-
 
       - name: Install nextest
-        run: cargo install cargo-nextest --locked --force
+        run: |
+          curl -LsSf https://get.nexte.st/latest/linux-musl | tar zxf - -C ${CARGO_HOME:-~/.cargo}/bin
 
       - name: Run tests debug
         run: cargo xtask test
