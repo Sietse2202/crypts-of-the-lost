@@ -61,7 +61,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             ];
 
             for command in commands {
-                if is_ci && command.0 == "taplo" {
+                if is_ci && command.0 == "typos" {
                     continue;
                 }
 

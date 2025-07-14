@@ -5,9 +5,13 @@ on:
     branches: ["master"]
   pull_request:
 
+permissions:
+  contents: read
+
 env:
   CARGO_TERM_COLOR: always
   IS_CI: true
+  CLICOLOR: 1
 
 jobs:
   test:
