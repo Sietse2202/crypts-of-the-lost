@@ -7,6 +7,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  IS_CI: true
 
 jobs:
   test:
@@ -28,9 +29,12 @@ jobs:
           restore-keys: |
             cargo-tools-${{ runner.os }}-
 
-      - name: Install tools
+      - name: Install typos
+        uses: crate-ci/typos@v1.34.0
+
+      - name: Install taplo
         run: |
-          cargo install typos-cli taplo-cli --locked --force
+          curl -fsSL https://github.com/tamasfe/taplo/releases/latest/download/taplo-linux-x86_64.gz \ | gzip -d - | install -m 755 /dev/stdin /usr/local/bin/taplo
 
       - name: Run checks
         id: check
