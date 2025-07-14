@@ -1,0 +1,35 @@
+name: Check
+
+on:
+  push:
+    branches: ["*"]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    name: Check code
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache cargo binaries
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: cargo-tools-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            cargo-tools-${{ runner.os }}-
+
+      - name: Install tools
+        uses: |
+          cargo install typos-cli taplo-cli --locked --force
+
+      - name: Run checks
+        run: cargo xtask check
