@@ -1,5 +1,24 @@
 //! # xtask
 //! This crate is the way we do CI; it is used to build, run, format, and check the code.
+//!
+//! ---
+//!
+//! ```
+//! Copyright (C) 2025  Crypts of the Lost Team
+//!
+//! This program is free software: you can redistribute it and/or modify
+//! it under the terms of the GNU Affero General Public License as
+//! published by the Free Software Foundation, either version 3 of the
+//! License, or (at your option) any later version.
+//!
+//! This program is distributed in the hope that it will be useful,
+//! but WITHOUT ANY WARRANTY; without even the implied warranty of
+//! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//! GNU Affero General Public License for more details.
+//!
+//! You should have received a copy of the GNU Affero General Public License
+//! along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//! ```
 
 use clap::{Parser, Subcommand};
 use std::process::Command;
@@ -18,7 +37,7 @@ enum SubCommands {
     Check,
     // Formats all code, including toml files
     Fmt,
-    /// Runs tests using nextest
+    // Runs tests using nextest
     Test,
 }
 
@@ -26,7 +45,7 @@ enum SubCommands {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Cli::parse();
 
-    // Can be unsafe in multi-threaded programs but this won't be multithreaded so it's good
+    // Can be unsafe in multithreaded programs, but this won't be multithreaded, so it's good
     #[expect(unsafe_code)]
     unsafe {
         std::env::set_var("TAPLO_CONFIG", "./.config/taplo.toml");
