@@ -18,11 +18,21 @@ enum SubCommands {
     Check,
     // Formats all code, including toml files
     Fmt,
+    /// Runs tests using nextest
+    Test,
 }
 
 #[expect(clippy::print_stdout)]
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Cli::parse();
+
+    // Can be unsafe in multi-threaded programs but this won't be multithreaded so it's good
+    #[expect(unsafe_code)]
+    unsafe {
+        std::env::set_var("TAPLO_CONFIG", "./.config/taplo.toml");
+    };
+
+    let is_ci: bool = std::env::var("IS_CI").is_ok();
 
     match args.sub_commands {
         SubCommands::Build => {
@@ -51,6 +61,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             ];
 
             for command in commands {
+                if is_ci && command.0 == "typos" {
+                    continue;
+                }
+
                 let status = Command::new(command.0).args(command.1).status()?;
 
                 if !status.success() {
@@ -69,11 +83,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 std::process::exit(101);
             }
 
-            let taplo = Command::new("taplo")
-                .args(["fmt"])
-                .status()?;
+            let taplo = Command::new("taplo").args(["fmt"]).status()?;
 
             if !taplo.success() {
+                std::process::exit(101);
+            }
+        }
+        SubCommands::Test => {
+            let nextest = Command::new("cargo")
+                .args([
+                    "nextest",
+                    "run",
+                    "--profile",
+                    "ci",
+                    "--release",
+                    "--no-tests",
+                    "pass",
+                ])
+                .status()?;
+
+            if !nextest.success() {
                 std::process::exit(101);
             }
         }

@@ -1,0 +1,64 @@
+name: Check
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  IS_CI: true
+  CLICOLOR: 1
+
+jobs:
+  test:
+    name: Check code
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache cargo git and registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-cargo-git-registry-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-git-registry-
+
+      - name: Cache target dir
+        uses: actions/cache@v4
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-target-${{ hashFiles('**/Cargo.lock') }}-${{ hashFiles('**/*.rs') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-target-${{ hashFiles('**/Cargo.lock') }}-
+            ${{ runner.os }}-cargo-target-
+
+      - name: Install typos
+        uses: crate-ci/typos@v1.34.0
+
+      - name: Install taplo
+        run: |
+          curl -fsSL https://github.com/tamasfe/taplo/releases/latest/download/taplo-linux-x86_64.gz | gzip -d - | sudo install -m 755 /dev/stdin /usr/local/bin/taplo
+
+      - name: Run checks
+        id: check
+        continue-on-error: true
+        run: cargo xtask check
+
+      - name: How to fix failures
+        if: steps.check.outcome == 'failure'
+        run: |
+          echo "The automated check failed!"
+          echo "To fix, run locally:"
+          echo ""
+          echo "  cargo xtask check"
+          echo ""
+          echo "and push the resulting fixes back to this branch."
+          exit 1
