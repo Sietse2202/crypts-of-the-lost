@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2025 Crypts of the Lost Team
+
 [package]
 name = "network"
 version = "0.1.0"
@@ -10,6 +13,15 @@ keywords = ["xtask"]
 categories = ["games"]
 
 [dependencies]
+serde = { version = "1.0.219", features = ["derive"] }
+bincode = { version = "2.0.1", features = ["serde"] }
+quinn = "0.11.8"
+tokio = { version = "1.46.1", features = [
+  "rt",
+  "net",
+  "rt-multi-thread",
+  "macros",
+] }
 
 [lints]
 workspace = true
