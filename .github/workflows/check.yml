@@ -41,13 +41,11 @@ jobs:
             ${{ runner.os }}-cargo-target-
 
       - name: Install cargo-binstall
-        uses: cargo-bins/cargo-binstall@main
+        uses: cargo-bins/cargo-binstall@v1.14.1
 
-      - name: Install typos
-        uses: crate-ci/typos@v1.34.0
-
-      - name: Install taplo
-        run: cargo binstall taplo-cli --no-confirm
+      - name: Install taplo and typos
+        run: |
+          cargo binstall taplo-cli typos-cli --no-confirm
 
       - name: Run checks
         id: check
