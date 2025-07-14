@@ -69,9 +69,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 std::process::exit(101);
             }
 
-            let taplo = Command::new("taplo")
-                .args(["fmt"])
-                .status()?;
+            let taplo = Command::new("taplo").args(["fmt"]).status()?;
 
             if !taplo.success() {
                 std::process::exit(101);
