@@ -51,6 +51,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         std::env::set_var("TAPLO_CONFIG", "./.config/taplo.toml");
     };
 
+    // keeping it for later use
+    #[expect(unused)]
     let is_ci: bool = std::env::var("IS_CI").is_ok();
 
     match args.sub_commands {
@@ -80,10 +82,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             ];
 
             for command in commands {
-                if is_ci && command.0 == "typos" {
-                    continue;
-                }
-
                 let status = Command::new(command.0).args(command.1).status()?;
 
                 if !status.success() {
