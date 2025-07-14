@@ -47,7 +47,7 @@ jobs:
         uses: crate-ci/typos@v1.34.0
 
       - name: Install taplo
-        run: cargo binstall taplo --no-confirm
+        run: cargo binstall taplo-cli --no-confirm
 
       - name: Run checks
         id: check
