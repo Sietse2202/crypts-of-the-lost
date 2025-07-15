@@ -9,6 +9,6 @@
 #![feature(never_type)]
 #![feature(trivial_bounds)]
 
-mod cert;
-mod dispatcher;
+pub mod cert;
+pub mod dispatcher;
 pub mod serde;

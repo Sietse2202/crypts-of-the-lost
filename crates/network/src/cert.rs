@@ -4,9 +4,11 @@
 //! # Cert
 //! This module has some helper functions for working with certificates
 
-use anyhow::anyhow;
 use quinn::rustls::pki_types::pem::PemObject;
 use quinn::rustls::pki_types::{CertificateDer, PrivateKeyDer};
+use rustls_pki_types::pem;
+
+pub(crate) type Result<T> = std::result::Result<T, pem::Error>;
 
 /// A helper struct that just cleans the function signatures up.
 #[derive(Debug, PartialEq, Eq)]
@@ -39,11 +41,19 @@ impl Certs {
 
     /// Get the certificates from disk, this requires you to use something like
     /// [certbot](https://certbot.eff.org/)
+    ///
+    /// # Errors
+    /// This function errors due to any of the following
+    /// - IO error
+    /// - File not found
+    /// - Parsing error in the files
     #[expect(clippy::unwrap_used)]
-    pub fn read_from_file() -> anyhow::Result<Self> {
+    #[expect(clippy::missing_panics_doc)]
+    pub fn read_from_file() -> Result<Self> {
         let mut certs = CertificateDer::pem_file_iter("./fullchain.pem")?;
         if certs.any(|cert| cert.is_err()) {
-            anyhow!("Failed to read certs from disk.");
+            // Panics: we know there is an error
+            certs.find(Result::is_err).unwrap()?;
         }
 
         // Panics: we just confirmed that all certs are not Err.
