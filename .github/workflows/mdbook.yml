@@ -9,15 +9,15 @@ env:
   IS_CI: true
 
 jobs:
-  mdbook:
-    name: Build and deploy
+  build:
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Install cargo-binstall
-        uses: cargo-bins/cargo-binstall@v1.14.1
+        uses: cargo-bins/cargo-binstall@v1
 
       - name: Install mdbook
         run: cargo binstall mdbook --no-confirm
@@ -25,8 +25,33 @@ jobs:
       - name: Build mdBook
         run: mdbook build
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./book
+          name: mdbook
+          path: ./book
+          if-no-files-found: error
+          retention-days: 1
+          overwrite: true
+
+  deploy:
+    name: Deploy
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environmnt:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifact_name: mdbook
