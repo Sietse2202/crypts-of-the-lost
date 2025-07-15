@@ -2,7 +2,7 @@ name: mdBook
 
 on:
   push:
-    branches: ["master", "mdbook"]
+    branches: ["master"]
 
 env:
   CARGO_TERM_COLOR: always
