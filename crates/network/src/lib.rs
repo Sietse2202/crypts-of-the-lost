@@ -6,6 +6,9 @@
 //! specifies the interface they use to communicate.
 
 #![expect(clippy::multiple_crate_versions)]
+#![feature(never_type)]
+#![feature(trivial_bounds)]
 
+mod cert;
+mod dispatcher;
 pub mod serde;
-pub mod server;

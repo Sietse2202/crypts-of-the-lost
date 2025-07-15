@@ -7,6 +7,8 @@
 //! - CLI logic
 //! - The calling of functions from other crates in the workspace
 
+#![expect(clippy::multiple_crate_versions)]
+
 use clap::Parser;
 
 #[derive(Parser, Debug, Copy, Clone, PartialEq, Ord, PartialOrd, Eq, Hash, Default)]
