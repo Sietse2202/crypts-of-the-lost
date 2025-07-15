@@ -25,6 +25,9 @@ jobs:
       - name: Build mdBook
         run: mdbook build
 
+      - name: Remove symlinks from build output
+        run: find book/ -type l -exec rm {} \;
+
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
         with:
