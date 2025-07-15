@@ -29,13 +29,9 @@ jobs:
         run: find book/ -type l -exec rm {} \;
 
       - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: mdbook
           path: ./book
-          if-no-files-found: error
-          retention-days: 1
-          overwrite: true
 
   deploy:
     name: Deploy
@@ -57,4 +53,3 @@ jobs:
         uses: actions/deploy-pages@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifact_name: mdbook
