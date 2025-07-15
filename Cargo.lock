@@ -637,6 +637,7 @@ dependencies = [
  "bevy_ecs",
  "bincode",
  "quinn",
+ "rustls-pki-types",
  "serde",
  "thiserror 2.0.12",
  "tokio",
