@@ -1,0 +1,32 @@
+name: mdBook
+
+on:
+  push:
+    branches: ["master", "mdbook"]
+
+env:
+  CARGO_TERM_COLOR: always
+  IS_CI: true
+
+jobs:
+  mdbook:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@v1.14.1
+
+      - name: Install mdbook
+        run: cargo binstall mdbook --no-confirm
+
+      - name: Build mdBook
+        run: mdbook build docs
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./book
