@@ -4,6 +4,8 @@ ChatGPT generated this file, because I'm bad at writing. I also told him to give
 code examples of how it would look like, but we would obviously need to adapt
 it to our game.
 
+# **Change this when we've progressed with this crate**
+
 ## Overview
 
 - ✅ Support many concurrent connections (`tokio::spawn`)
