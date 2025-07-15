@@ -14,7 +14,7 @@ env:
   CLICOLOR: 1
 
 jobs:
-  test:
+  check:
     name: Check code
     runs-on: ubuntu-latest
 
