@@ -4,16 +4,16 @@
 //! # Dispatcher
 //! This module defines types that are used to communicate between client and server.
 
-#![allow(dead_code)]
-
 use crate::cert::Certs;
-use bevy_ecs::prelude::Resource;
-use quinn::{Connection, Endpoint, ServerConfig};
-use rustls_pki_types::pem;
-use std::collections::VecDeque;
+use crate::target::NetworkTarget;
+use bincode::error::DecodeError;
+use quinn::rustls::pki_types::pem;
+use quinn::{ClosedStream, Connection, Endpoint, ReadError, ServerConfig, WriteError};
+use std::collections::{HashSet, VecDeque};
 use std::fmt::Formatter;
 use std::net::SocketAddr;
 use thiserror::Error;
+use tracing::{error, info};
 
 /// Errors the dispatcher can encounter
 #[derive(Error, Debug)]
@@ -27,163 +27,65 @@ pub enum DispatcherError {
     /// Pem error from trying to get the certificates and key
     #[error("pem error: {0}")]
     Pem(#[from] pem::Error),
+    /// An error while reading the buffer
+    #[error("read error: {0}")]
+    Read(#[from] ReadError),
+    /// Basic write error
+    #[error("write error: {0}")]
+    Write(#[from] WriteError),
+    /// Stream closed
+    #[error("closed stream")]
+    Closed(#[from] ClosedStream),
+    /// Bincode decoding error
+    #[error("bincode decode error: {0}")]
+    Decode(#[from] DecodeError),
 }
 
 pub(crate) type Result<T> = std::result::Result<T, DispatcherError>;
-
-/// Simple type alias for binary data
-pub type Data = Box<[u8]>;
-
-/// A network event from the server point of view
-#[derive(
-    Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Ord, PartialOrd,
-)]
-pub enum NetworkEvent {
-    /// Event that a new client has connected
-    NewConnection(SocketAddr),
-    /// Event that a client has disconnected
-    ConnectionClosed(SocketAddr),
-    /// Response from a client
-    Message(Response),
-}
 
 /// Response from a client
 #[derive(
     Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Ord, PartialOrd,
 )]
-pub struct Response {
-    client: SocketAddr,
-    data: Data,
-}
+pub struct Response {}
 
-/// Abstraction over a network target, this trait is used to select the clients a message should be
-/// sent to
-pub trait NetworkTarget {
-    /// This method should return the clients to send a message to.
-    fn receivers(&self, clients: Vec<SocketAddr>) -> Vec<SocketAddr>;
-}
-
-/// Target to send a message to a single client
+/// Message to a client
 #[derive(
     Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Ord, PartialOrd,
 )]
-pub struct Single(SocketAddr);
-
-impl Single {
-    /// Create a new self from the address
-    #[inline]
-    #[must_use]
-    pub const fn new(client: SocketAddr) -> Self {
-        Self(client)
-    }
-}
-
-impl NetworkTarget for Single {
-    fn receivers(&self, _: Vec<SocketAddr>) -> Vec<SocketAddr> {
-        vec![self.0]
-    }
-}
-
-/// Network target, to send a message to a group of people
-#[derive(
-    Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Ord, PartialOrd,
-)]
-pub struct Group(Vec<SocketAddr>);
-
-impl Group {
-    /// Create a new group from an iterator
-    #[inline]
-    #[must_use]
-    pub fn new<I, Item>(ground: I) -> Self
-    where
-        I: IntoIterator<Item = Item>,
-        Item: Into<SocketAddr>,
-    {
-        Self(ground.into_iter().map(Into::into).collect())
-    }
-}
-
-impl NetworkTarget for Group {
-    fn receivers(&self, _: Vec<SocketAddr>) -> Vec<SocketAddr> {
-        self.0.clone()
-    }
-}
-
-/// Target to send a message to everyone
-#[derive(
-    Debug,
-    Clone,
-    PartialEq,
-    Eq,
-    Hash,
-    serde::Serialize,
-    serde::Deserialize,
-    Ord,
-    PartialOrd,
-    Default,
-)]
-pub struct All;
-
-impl NetworkTarget for All {
-    fn receivers(&self, clients: Vec<SocketAddr>) -> Vec<SocketAddr> {
-        clients
-    }
-}
-
-/// Sends a message to everyone but one client
-#[derive(
-    Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Ord, PartialOrd,
-)]
-pub struct AllBut(pub(crate) SocketAddr);
-
-impl AllBut {
-    /// Creates a new [`AllBut`] instance from an address
-    #[inline]
-    #[must_use]
-    pub const fn new(addr: SocketAddr) -> Self {
-        Self(addr)
-    }
-}
-
-impl NetworkTarget for AllBut {
-    fn receivers(&self, clients: Vec<SocketAddr>) -> Vec<SocketAddr> {
-        clients.into_iter().filter(|c| c != &self.0).collect()
-    }
-}
+pub struct Message {}
 
 /// This struct contains a
 pub struct MessageData {
-    target: Box<dyn NetworkTarget + Send + Sync>,
-    data: Data,
+    _target: Box<dyn NetworkTarget + Send + Sync>,
+    message: Message,
 }
 
 impl std::fmt::Debug for MessageData {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("MessageData")
-            .field("target", &"Box<dyn NetworkTarget>")
-            .field("data", &self.data)
+            .field("_target", &"Box<dyn NetworkTarget>")
+            .field("message", &self.message)
             .finish()
     }
 }
 
 /// The network-dispatcher, this handles all connections between server and clients.
-#[derive(Debug, Resource)]
+#[derive(Debug)]
 pub struct NetworkDispatcher {
     socket: SocketAddr,
-    clients: Vec<SocketAddr>,
-    pub(crate) message_queue: VecDeque<MessageData>,
-    pub(crate) event_queue: VecDeque<NetworkEvent>,
+    clients: HashSet<SocketAddr>,
+    pub(crate) _message_queue: VecDeque<MessageData>,
 }
 
 impl NetworkDispatcher {
     /// Create a new dispatcher on the given `addr`
     #[inline]
     #[must_use]
-    pub const fn new(addr: SocketAddr) -> Self {
+    pub fn new(addr: SocketAddr) -> Self {
         Self {
-            message_queue: VecDeque::new(),
-            event_queue: VecDeque::new(),
-            clients: Vec::new(),
+            _message_queue: VecDeque::new(),
+            clients: HashSet::new(),
             socket: addr,
         }
     }
@@ -198,13 +100,12 @@ impl NetworkDispatcher {
     /// Get the clients currently connected
     #[inline]
     #[must_use]
-    pub fn clients(&self) -> &[SocketAddr] {
+    pub const fn clients(&self) -> &HashSet<SocketAddr> {
         &self.clients
     }
 
-    #[inline]
-    pub(crate) fn queue(&mut self, message: MessageData) {
-        self.message_queue.push_back(message);
+    pub(crate) fn add_client(&mut self, client: SocketAddr) {
+        self.clients.insert(client);
     }
 
     /// Listens for connections on `self.socket`, uses `handle_conn` to handle each connection
@@ -214,9 +115,15 @@ impl NetworkDispatcher {
     /// The function may error due to one of
     /// - IO errors
     /// - Connection errors
-    pub async fn listen<F>(self, config: ServerConfig, handle_conn: F, certs: Certs) -> Result<()>
+    pub async fn listen<F>(
+        mut self,
+        config: ServerConfig,
+        handle_conn: F,
+        certs: Certs,
+    ) -> Result<()>
     where
-        F: AsyncFn(&Self, Connection) -> Result<()> + Send + Sync + 'static,
+        F: AsyncFn(Connection) -> Result<()> + Copy + Send + Sync + 'static,
+        for<'a> F::CallRefFuture<'a>: Send,
     {
         let endpoint = Endpoint::server(config, self.socket)?;
         let (_certs, _key) = (certs.certs(), certs.key());
@@ -224,9 +131,38 @@ impl NetworkDispatcher {
         while let Some(conn) = endpoint.accept().await {
             let connection = conn.await?;
 
-            handle_conn(&self, connection).await?;
+            let addr = connection.remote_address();
+            self.add_client(addr);
+
+            tokio::spawn(async move {
+                if let Err(e) = handle_conn(connection).await {
+                    error!("Error while handling connection {addr}: {e}");
+                }
+            });
         }
 
         Ok(())
     }
+}
+
+/// Default connection handler
+///
+/// # Errors
+/// TODO: fix the errors section
+pub async fn default_handler(conn: Connection) -> Result<()> {
+    info!("New connection at {}", conn.remote_address());
+
+    while let Ok((_send, mut recv)) = conn.accept_bi().await {
+        let mut len_buf = [0u8; 4];
+        recv.read(&mut len_buf).await?;
+        let len = u32::from_be_bytes(len_buf);
+
+        let mut buf = vec![0u8; len as usize];
+        recv.read(&mut buf).await?;
+
+        let (_response, _byte_count): (Response, _) =
+            bincode::serde::decode_from_slice(&buf, bincode::config::standard())?;
+    }
+
+    Ok(())
 }

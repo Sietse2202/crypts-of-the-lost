@@ -6,9 +6,9 @@
 //! specifies the interface they use to communicate.
 
 #![expect(clippy::multiple_crate_versions)]
-#![feature(never_type)]
-#![feature(trivial_bounds)]
+#![feature(async_fn_traits)]
 
 pub mod cert;
 pub mod dispatcher;
 pub mod serde;
+pub mod target;
