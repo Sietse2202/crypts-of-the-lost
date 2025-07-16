@@ -3,7 +3,8 @@
 
 use protocol::command::Command;
 
-/// This struct contains a
+/// This struct contains the command received from the client and some extra
+/// metadata and context about it and its source.
 #[expect(dead_code)]
 #[derive(Debug)]
 pub struct InboundMessage {
