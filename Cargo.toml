@@ -5,6 +5,13 @@
 members = ["crates/network", "crates/server", "xtask"]
 resolver = "2"
 
+[workspace.dependencies]
+clap = { version = "4.5.41", features = ["derive"] }
+thiserror = "2.0.12"
+tracing = "0.1.41"
+serde = { version = "1.0.219", default-features = false, features = ["derive"] }
+tokio = { version = "1.46.1", default-features = false }
+
 [workspace.lints.rust]
 unsafe_code = "deny"
 missing_docs = "deny"

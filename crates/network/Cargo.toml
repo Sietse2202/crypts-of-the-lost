@@ -14,12 +14,12 @@ categories = ["games"]
 
 [dependencies]
 quinn = "0.11.8"
-thiserror = "2.0.12"
+thiserror = { workspace = true }
 rustls-pki-types = "1.12.0"
-tracing = "0.1.41"
-serde = { version = "1.0.219", default-features = false, features = ["derive"] }
+tracing = { workspace = true }
+serde = { workspace = true }
 bincode = { version = "2.0.1", features = ["serde"] }
-tokio = { version = "1.46.1", default-features = false }
+tokio = { workspace = true }
 
 [lints]
 workspace = true
