@@ -53,12 +53,14 @@ impl NetworkDispatcher {
     }
 
     /// Pushes a new message to the queue
+    #[inline]
     pub fn push(&mut self, message: OutboundMessage) {
         self.outbound.push_back(message);
     }
 
-    /// Gets the first response
-    pub fn get(&mut self) -> Option<InboundMessage> {
+    /// Get the first response, and remove it from the queue
+    #[inline]
+    pub fn pop(&mut self) -> Option<InboundMessage> {
         self.inbound.pop_front()
     }
 
