@@ -2,7 +2,8 @@
 // Copyright (C) 2025 Crypts of the Lost Team
 
 //! # Dispatcher
-//! This module defines types that are used to communicate between client and server.
+//! Defines the [`NetworkDispatcher`] struct that coordinates the communication between
+//! the game logic and network logic.
 
 use crate::cert::Certs;
 use crate::error::Result;
