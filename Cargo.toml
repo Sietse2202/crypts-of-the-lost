@@ -2,7 +2,12 @@
 # Copyright (C) 2025 Crypts of the Lost Team
 
 [workspace]
-members = ["crates/network", "crates/server", "xtask"]
+members = [
+    "crates/server",
+    "crates/network",
+    "crates/protocol",
+    "xtask"
+]
 resolver = "2"
 
 [workspace.dependencies]
