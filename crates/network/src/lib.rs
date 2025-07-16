@@ -10,5 +10,6 @@
 
 pub mod cert;
 pub mod dispatcher;
+pub mod error;
 pub mod protocol;
 pub mod target;

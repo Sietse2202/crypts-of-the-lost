@@ -5,42 +5,12 @@
 //! This module defines types that are used to communicate between client and server.
 
 use crate::cert::Certs;
+use crate::error::Result;
 use crate::protocol::{Command, InboundMessage, OutboundMessage};
-use bincode::error::DecodeError;
-use quinn::rustls::pki_types::pem;
-use quinn::{ClosedStream, Connection, Endpoint, ReadError, ServerConfig, WriteError};
+use quinn::{Connection, Endpoint, ServerConfig};
 use std::collections::{HashSet, VecDeque};
 use std::net::SocketAddr;
-use thiserror::Error;
 use tracing::{error, info};
-
-/// Errors the dispatcher can encounter
-#[derive(Error, Debug)]
-pub enum DispatcherError {
-    /// Io error
-    #[error("IO error: {0}")]
-    Io(#[from] std::io::Error),
-    /// Quinn connection error
-    #[error("connection error: {0}")]
-    Connection(#[from] quinn::ConnectionError),
-    /// Pem error from trying to get the certificates and key
-    #[error("pem error: {0}")]
-    Pem(#[from] pem::Error),
-    /// An error while reading the buffer
-    #[error("read error: {0}")]
-    Read(#[from] ReadError),
-    /// Basic write error
-    #[error("write error: {0}")]
-    Write(#[from] WriteError),
-    /// Stream closed
-    #[error("closed stream")]
-    Closed(#[from] ClosedStream),
-    /// Bincode decoding error
-    #[error("bincode decode error: {0}")]
-    Decode(#[from] DecodeError),
-}
-
-pub(crate) type Result<T> = std::result::Result<T, DispatcherError>;
 
 /// The network-dispatcher, this handles all connections between server and clients.
 #[derive(Debug)]
