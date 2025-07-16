@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025 Crypts of the Lost Team
 
-use super::Command;
+use protocol::command::Command;
 
-/// This struct contains a
+/// This struct contains the command received from the client and some extra
+/// metadata and context about it and its source.
 #[expect(dead_code)]
 #[derive(Debug)]
 pub struct InboundMessage {

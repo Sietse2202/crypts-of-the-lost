@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025 Crypts of the Lost Team
 
-use super::Event;
 use crate::target::NetworkTarget;
+use protocol::event::Event;
 
-/// This struct contains a
+/// This struct contains the event waiting to be sent by the server
+/// and some extra metadata and context about it and its target.
 #[expect(dead_code)]
 pub struct OutboundMessage {
     target: Box<dyn NetworkTarget + Send + Sync>,

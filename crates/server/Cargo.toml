@@ -14,7 +14,8 @@ categories = ["games"]
 
 [dependencies]
 clap = { workspace = true }
-network = { path = "../network" }
+network = { workspace = true }
+protocol = { workspace = true }
 
 [lints]
 workspace = true
