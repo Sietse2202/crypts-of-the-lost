@@ -10,7 +10,4 @@ use serde::{Deserialize, Serialize};
 /// Command from the client to the server
 #[derive(Serialize, Deserialize, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
 #[non_exhaustive]
-pub enum Command {
-    /// Command sent by the client to connect to the server
-    Connect,
-}
+pub struct Command {}
