@@ -75,7 +75,8 @@ impl std::fmt::Debug for MessageData {
 pub struct NetworkDispatcher {
     socket: SocketAddr,
     clients: HashSet<SocketAddr>,
-    pub(crate) _message_queue: VecDeque<MessageData>,
+    pub(crate) outgoing: VecDeque<MessageData>,
+    pub(crate) incoming: VecDeque<()>,
 }
 
 impl NetworkDispatcher {
@@ -84,7 +85,8 @@ impl NetworkDispatcher {
     #[must_use]
     pub fn new(addr: SocketAddr) -> Self {
         Self {
-            _message_queue: VecDeque::new(),
+            outgoing: VecDeque::new(),
+            incoming: VecDeque::new(),
             clients: HashSet::new(),
             socket: addr,
         }
@@ -106,6 +108,16 @@ impl NetworkDispatcher {
 
     pub(crate) fn add_client(&mut self, client: SocketAddr) {
         self.clients.insert(client);
+    }
+
+    /// Pushes a new message to the queue
+    pub fn push(&mut self, message: MessageData) {
+        self.outgoing.push_back(message);
+    }
+
+    /// Gets the first response
+    pub fn get(&mut self) -> Option<()> {
+        self.incoming.pop_front()
     }
 
     /// Listens for connections on `self.socket`, uses `handle_conn` to handle each connection
