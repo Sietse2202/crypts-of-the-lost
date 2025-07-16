@@ -5,6 +5,7 @@
 //! This module defines types that are used to communicate between client and server.
 
 use crate::cert::Certs;
+use crate::protocol::{Command, Event};
 use crate::target::NetworkTarget;
 use bincode::error::DecodeError;
 use quinn::rustls::pki_types::pem;
@@ -43,29 +44,17 @@ pub enum DispatcherError {
 
 pub(crate) type Result<T> = std::result::Result<T, DispatcherError>;
 
-/// Response from a client
-#[derive(
-    Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Ord, PartialOrd,
-)]
-pub struct Response {}
-
-/// Message to a client
-#[derive(
-    Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Ord, PartialOrd,
-)]
-pub struct Message {}
-
 /// This struct contains a
 pub struct MessageData {
     _target: Box<dyn NetworkTarget + Send + Sync>,
-    message: Message,
+    event: Event,
 }
 
 impl std::fmt::Debug for MessageData {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("MessageData")
             .field("_target", &"Box<dyn NetworkTarget>")
-            .field("message", &self.message)
+            .field("event", &self.event)
             .finish()
     }
 }
@@ -172,7 +161,7 @@ pub async fn default_handler(conn: Connection) -> Result<()> {
         let mut buf = vec![0u8; len as usize];
         recv.read(&mut buf).await?;
 
-        let (_response, _byte_count): (Response, _) =
+        let (_response, _byte_count): (Command, _) =
             bincode::serde::decode_from_slice(&buf, bincode::config::standard())?;
     }
 
