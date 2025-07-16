@@ -5,13 +5,11 @@
 //! This module defines types that are used to communicate between client and server.
 
 use crate::cert::Certs;
-use crate::protocol::{Command, Event};
-use crate::target::NetworkTarget;
+use crate::protocol::{Command, InboundMessage, OutboundMessage};
 use bincode::error::DecodeError;
 use quinn::rustls::pki_types::pem;
 use quinn::{ClosedStream, Connection, Endpoint, ReadError, ServerConfig, WriteError};
 use std::collections::{HashSet, VecDeque};
-use std::fmt::Formatter;
 use std::net::SocketAddr;
 use thiserror::Error;
 use tracing::{error, info};
@@ -44,28 +42,13 @@ pub enum DispatcherError {
 
 pub(crate) type Result<T> = std::result::Result<T, DispatcherError>;
 
-/// This struct contains a
-pub struct MessageData {
-    _target: Box<dyn NetworkTarget + Send + Sync>,
-    event: Event,
-}
-
-impl std::fmt::Debug for MessageData {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("MessageData")
-            .field("_target", &"Box<dyn NetworkTarget>")
-            .field("event", &self.event)
-            .finish()
-    }
-}
-
 /// The network-dispatcher, this handles all connections between server and clients.
 #[derive(Debug)]
 pub struct NetworkDispatcher {
     socket: SocketAddr,
     clients: HashSet<SocketAddr>,
-    pub(crate) outgoing: VecDeque<MessageData>,
-    pub(crate) incoming: VecDeque<()>,
+    pub(crate) outbound: VecDeque<OutboundMessage>,
+    pub(crate) inbound: VecDeque<InboundMessage>,
 }
 
 impl NetworkDispatcher {
@@ -74,8 +57,8 @@ impl NetworkDispatcher {
     #[must_use]
     pub fn new(addr: SocketAddr) -> Self {
         Self {
-            outgoing: VecDeque::new(),
-            incoming: VecDeque::new(),
+            outbound: VecDeque::new(),
+            inbound: VecDeque::new(),
             clients: HashSet::new(),
             socket: addr,
         }
@@ -100,13 +83,13 @@ impl NetworkDispatcher {
     }
 
     /// Pushes a new message to the queue
-    pub fn push(&mut self, message: MessageData) {
-        self.outgoing.push_back(message);
+    pub fn push(&mut self, message: OutboundMessage) {
+        self.outbound.push_back(message);
     }
 
     /// Gets the first response
-    pub fn get(&mut self) -> Option<()> {
-        self.incoming.pop_front()
+    pub fn get(&mut self) -> Option<InboundMessage> {
+        self.inbound.pop_front()
     }
 
     /// Listens for connections on `self.socket`, uses `handle_conn` to handle each connection
