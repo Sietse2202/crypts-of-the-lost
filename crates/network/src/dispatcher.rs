@@ -7,7 +7,8 @@
 
 use crate::cert::Certs;
 use crate::error::Result;
-use crate::protocol::{Command, InboundMessage, OutboundMessage};
+use crate::protocol::{InboundMessage, OutboundMessage};
+use protocol::command::Command;
 use quinn::{Connection, Endpoint, ServerConfig};
 use std::collections::{HashSet, VecDeque};
 use std::net::SocketAddr;

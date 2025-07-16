@@ -374,6 +374,7 @@ name = "network"
 version = "0.1.0"
 dependencies = [
  "bincode",
+ "protocol",
  "quinn",
  "rustls-pki-types",
  "serde",
@@ -436,6 +437,9 @@ dependencies = [
 [[package]]
 name = "protocol"
 version = "0.1.0"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "quinn"

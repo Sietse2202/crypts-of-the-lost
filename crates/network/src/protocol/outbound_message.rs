@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025 Crypts of the Lost Team
 
-use super::Event;
 use crate::target::NetworkTarget;
+use protocol::event::Event;
 
 /// This struct contains a
 #[expect(dead_code)]

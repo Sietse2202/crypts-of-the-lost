@@ -7,12 +7,8 @@
 //! This is in the form of two structs, [`Message`], and [`Response`], Message being
 //! Server -> Client, and Response being Client -> Server.
 
-mod command;
-mod event;
 mod inbound_message;
 mod outbound_message;
 
-pub use command::Command;
-pub use event::Event;
 pub use inbound_message::InboundMessage;
 pub use outbound_message::OutboundMessage;

@@ -3,3 +3,6 @@
 
 //! # Protocol
 //! Defines the communication between the server and client.
+
+pub mod command;
+pub mod event;

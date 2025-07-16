@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025 Crypts of the Lost Team
 
-use super::Command;
+use protocol::command::Command;
 
 /// This struct contains a
 #[expect(dead_code)]
