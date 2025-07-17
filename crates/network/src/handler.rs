@@ -6,6 +6,8 @@
 //! and connection management for the game server
 
 mod client;
+mod deserialize;
+mod serialize;
 
 use crate::{
     cert::Certs,

@@ -8,10 +8,10 @@
 mod inner;
 use inner::EventInner;
 
-use serde::{Deserialize, Serialize};
+use bincode::{Decode, Encode};
 
 /// Message from the server, to the client
-#[derive(Serialize, Deserialize, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
+#[derive(Encode, Decode, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
 #[non_exhaustive]
 pub struct Event {
     inner: EventInner,

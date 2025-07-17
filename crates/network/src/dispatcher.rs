@@ -123,7 +123,7 @@ pub async fn default_handler(conn: Connection) -> Result<()> {
         recv.read(&mut buf).await?;
 
         let (_response, _byte_count): (Command, _) =
-            bincode::serde::decode_from_slice(&buf, bincode::config::standard())?;
+            bincode::decode_from_slice(&buf, bincode::config::standard())?;
     }
 
     Ok(())

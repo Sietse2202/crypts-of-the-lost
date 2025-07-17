@@ -5,8 +5,8 @@
 //! This module defines the [`EventInner`] type for the actual events
 //! for an event message from the server.
 
-use serde::{Deserialize, Serialize};
+use bincode::{Decode, Encode};
 
-#[derive(Serialize, Deserialize, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
+#[derive(Decode, Encode, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
 #[non_exhaustive]
 pub enum EventInner {}

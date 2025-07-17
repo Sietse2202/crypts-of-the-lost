@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025 Crypts of the Lost Team
 
+use super::NetworkHandler;
 use quinn::Connection;
 use std::{collections::HashSet, net::SocketAddr};
-
-use super::NetworkHandler;
 
 impl NetworkHandler {
     /// Adds a new client connection to the handler

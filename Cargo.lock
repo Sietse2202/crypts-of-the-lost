@@ -377,7 +377,6 @@ dependencies = [
  "protocol",
  "quinn",
  "rustls-pki-types",
- "serde",
  "thiserror 2.0.12",
  "tokio",
  "tracing",
@@ -438,7 +437,7 @@ dependencies = [
 name = "protocol"
 version = "0.1.0"
 dependencies = [
- "serde",
+ "bincode",
 ]
 
 [[package]]

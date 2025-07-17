@@ -8,10 +8,10 @@
 mod inner;
 use inner::CommandInner;
 
-use serde::{Deserialize, Serialize};
+use bincode::{Decode, Encode};
 
 /// Command from the client to the server
-#[derive(Serialize, Deserialize, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
+#[derive(Encode, Decode, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
 #[non_exhaustive]
 pub struct Command {
     inner: CommandInner,

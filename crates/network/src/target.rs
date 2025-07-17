@@ -12,9 +12,7 @@ pub trait NetworkTarget {
 }
 
 /// Target to send a message to a single client
-#[derive(
-    Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Ord, PartialOrd,
-)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Ord, PartialOrd)]
 pub struct Single(SocketAddr);
 
 impl Single {
@@ -35,7 +33,7 @@ impl NetworkTarget for Single {
 }
 
 /// Network target, to send a message to a group of people
-#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Group(HashSet<SocketAddr>);
 
 impl Group {
@@ -58,18 +56,7 @@ impl NetworkTarget for Group {
 }
 
 /// Target to send a message to everyone
-#[derive(
-    Debug,
-    Clone,
-    PartialEq,
-    Eq,
-    Hash,
-    serde::Serialize,
-    serde::Deserialize,
-    Ord,
-    PartialOrd,
-    Default,
-)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Ord, PartialOrd, Default)]
 pub struct All;
 
 impl NetworkTarget for All {
@@ -79,9 +66,7 @@ impl NetworkTarget for All {
 }
 
 /// Sends a message to everyone but one client
-#[derive(
-    Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Ord, PartialOrd,
-)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Ord, PartialOrd)]
 pub struct AllBut(pub(crate) SocketAddr);
 
 impl AllBut {

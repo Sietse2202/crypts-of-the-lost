@@ -5,8 +5,8 @@
 //! This module defines the [`CommandInner`] type for the actual commands
 //! for a command message from the client.
 
-use serde::{Deserialize, Serialize};
+use bincode::{Decode, Encode};
 
-#[derive(Serialize, Deserialize, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
+#[derive(Decode, Encode, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
 #[non_exhaustive]
 pub enum CommandInner {}
