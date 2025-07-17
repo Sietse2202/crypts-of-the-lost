@@ -5,7 +5,11 @@ It is used by the server to send game or system events to the client, ranging
 from `ConnectionAccepted` and `PositionUpdate` to `ChatMessage`.
 
 ```rust
-pub struct Event {}
+pub struct Event {
+    inner: EventInner,
+}
 ```
 
-| Field | Type | Description |
+| Field   | Type                             | Description                        |
+| ------- | -------------------------------- | ---------------------------------- |
+| `inner` | [`EventInner`](./event/inner.md) | The event kind and its information |
