@@ -8,8 +8,8 @@ use protocol::event::Event;
 /// and some extra metadata and context about it and its target.
 #[expect(dead_code)]
 pub struct OutboundMessage {
-    target: Box<dyn NetworkTarget + Send + Sync>,
-    event: Event,
+    pub target: Box<dyn NetworkTarget + Send + Sync>,
+    pub event: Event,
 }
 
 impl OutboundMessage {

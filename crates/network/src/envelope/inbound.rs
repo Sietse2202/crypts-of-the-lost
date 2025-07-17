@@ -5,16 +5,17 @@ use protocol::command::Command;
 
 /// This struct contains the command received from the client and some extra
 /// metadata and context about it and its source.
-#[expect(dead_code)]
+//#[expect(dead_code)]
 #[derive(Debug)]
 pub struct InboundMessage {
-    command: Command,
+    pub command: Command,
 }
 
 impl InboundMessage {
     /// Creates a new instance of [`OutboundMessage`]
     #[inline]
     #[must_use]
+    #[expect(dead_code)]
     pub const fn new(command: Command) -> Self {
         Self { command }
     }

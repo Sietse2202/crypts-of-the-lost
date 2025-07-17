@@ -8,7 +8,9 @@
 use crate::cert::Certs;
 use crate::envelope::{InboundMessage, OutboundMessage};
 use crate::error::Result;
+use crate::target::NetworkTarget;
 use protocol::command::Command;
+use protocol::event::Event;
 use quinn::{Connection, Endpoint, ServerConfig};
 use std::collections::{HashSet, VecDeque};
 use std::net::SocketAddr;
@@ -54,16 +56,18 @@ impl NetworkDispatcher {
         self.clients.insert(client);
     }
 
-    /// Pushes a new message to the queue
+    /// Pushes a new event to the queue
     #[inline]
-    pub fn push(&mut self, message: OutboundMessage) {
-        self.outbound.push_back(message);
+    pub fn push(&mut self, event: Event, target: Box<dyn NetworkTarget + Send + Sync>) {
+        let msg = OutboundMessage::new(target, event);
+        self.outbound.push_back(msg);
     }
 
     /// Get the first response, and remove it from the queue
     #[inline]
-    pub fn pop(&mut self) -> Option<InboundMessage> {
-        self.inbound.pop_front()
+    pub fn pop(&mut self) -> Option<Command> {
+        let msg = self.inbound.pop_front()?;
+        Some(msg.command)
     }
 
     /// Listens for connections on `self.socket`, uses `handle_conn` to handle each connection
