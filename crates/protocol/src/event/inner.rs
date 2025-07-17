@@ -1,18 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025 Crypts of the Lost Team
 
-//! # Event
-//! This module contains all types used for the communication from the server
-//! to the client.
-
-mod inner;
-use inner::EventInner;
+//! # Inner
+//! This module defines the [`EventInner`] type for the actual events
+//! for an event message from the server.
 
 use serde::{Deserialize, Serialize};
 
-/// Message from the server, to the client
 #[derive(Serialize, Deserialize, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
 #[non_exhaustive]
-pub struct Event {
-    inner: EventInner,
-}
+pub enum EventInner {}
