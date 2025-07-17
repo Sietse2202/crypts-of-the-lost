@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025 Crypts of the Lost Team
 
+#![expect(dead_code)]
+
 use bincode::error::DecodeError;
 use protocol::command::Command;
 

@@ -8,6 +8,7 @@
 mod client;
 mod deserialize;
 mod serialize;
+mod start;
 
 use crate::{
     cert::Certs,
@@ -24,7 +25,7 @@ use tokio::sync::{RwLock, mpsc};
 #[expect(dead_code)]
 pub struct NetworkHandler {
     /// The QUIC endpoint for handling connections
-    enpoint: Option<Endpoint>,
+    endpoint: Option<Endpoint>,
     /// Active connections mapped by client Address
     connections: Arc<RwLock<HashMap<SocketAddr, Connection>>>,
     /// Channel for receiving outbound messages from the dispatcher
@@ -45,6 +46,7 @@ impl NetworkHandler {
     /// Sets up the handler with the necessary channels, configuration, and certificates
     /// for managing network connections and message processing.
     #[must_use]
+    #[inline]
     pub fn new(
         socket: SocketAddr,
         server_config: ServerConfig,
@@ -53,7 +55,7 @@ impl NetworkHandler {
         inbound_tx: mpsc::UnboundedSender<InboundMessage>,
     ) -> Self {
         Self {
-            enpoint: None,
+            endpoint: None,
             connections: Arc::new(RwLock::new(HashMap::new())),
             outbound_rx,
             inbound_tx,

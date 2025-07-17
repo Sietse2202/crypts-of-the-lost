@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025 Crypts of the Lost Team
 
+#![expect(dead_code)]
+
 use super::NetworkHandler;
 use bincode::error::EncodeError;
 use protocol::event::Event;
