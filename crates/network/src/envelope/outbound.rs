@@ -6,7 +6,6 @@ use protocol::event::Event;
 
 /// This struct contains the event waiting to be sent by the server
 /// and some extra metadata and context about it and its target.
-#[expect(dead_code)]
 pub struct OutboundMessage {
     pub target: Box<dyn NetworkTarget + Send + Sync>,
     pub event: Event,

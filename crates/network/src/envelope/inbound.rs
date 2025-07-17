@@ -15,7 +15,6 @@ impl InboundMessage {
     /// Creates a new instance of [`OutboundMessage`]
     #[inline]
     #[must_use]
-    #[expect(dead_code)]
     pub const fn new(command: Command) -> Self {
         Self { command }
     }
