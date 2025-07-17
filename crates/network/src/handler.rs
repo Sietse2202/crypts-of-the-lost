@@ -5,6 +5,8 @@
 //! Handles the actual network communication, message serialization/deserialization,
 //! and connection management for the game server
 
+mod client;
+
 use crate::{
     cert::Certs,
     envelope::{InboundMessage, OutboundMessage},
