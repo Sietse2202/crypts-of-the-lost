@@ -11,6 +11,7 @@ mod handle_connection;
 mod inbound;
 mod outbound;
 mod serialize;
+mod shutdown;
 mod start;
 
 use crate::{

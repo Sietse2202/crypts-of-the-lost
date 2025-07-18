@@ -33,7 +33,6 @@ impl NetworkHandler {
         };
 
         info!("cleaning up connections for {addr} (reason: {result} ended");
-        Self::remove_client(connections, addr).await;
-        connection.close(0u32.into(), b"Connection handler ended");
+        Self::remove_client(connections, addr, 0, b"Connection handler ended").await;
     }
 }

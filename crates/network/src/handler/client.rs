@@ -21,9 +21,13 @@ impl NetworkHandler {
     pub(super) async fn remove_client(
         connections: Arc<RwLock<HashMap<SocketAddr, Connection>>>,
         addr: SocketAddr,
+        error_code: u32,
+        reason: &[u8],
     ) {
-        let mut connections = connections.write().await;
-        connections.remove(&addr);
+        let Some(connection) = connections.write().await.remove(&addr) else {
+            return;
+        };
+        connection.close(error_code.into(), reason);
     }
 
     /// Gets all currently connected client addresses
