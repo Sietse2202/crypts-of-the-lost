@@ -6,7 +6,6 @@
 //! specifies the protocol they use to communicate.
 
 #![expect(clippy::multiple_crate_versions)]
-#![feature(async_fn_traits)]
 
 pub mod cert;
 pub mod dispatcher;

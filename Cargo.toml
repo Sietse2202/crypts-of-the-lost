@@ -13,7 +13,6 @@ resolver = "2"
 [workspace.dependencies]
 protocol = { path = "crates/protocol" }
 network = { path = "crates/network" }
-flume = "0.11.1"
 clap = { version = "4.5.41", features = ["derive"] }
 thiserror = "2.0.12"
 tracing = "0.1.41"
