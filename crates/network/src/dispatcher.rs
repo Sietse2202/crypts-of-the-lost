@@ -6,7 +6,7 @@
 //! the game logic and network logic.
 
 use crate::envelope::{InboundMessage, OutboundMessage};
-use crate::target::NetworkTarget;
+use crate::target::Target;
 use protocol::command::Command;
 use protocol::event::Event;
 use std::collections::{HashSet, VecDeque};
@@ -54,7 +54,7 @@ impl NetworkDispatcher {
 
     /// Pushes a new event to the queue
     #[inline]
-    pub fn push(&mut self, event: Event, target: Box<dyn NetworkTarget + Send + Sync>) {
+    pub fn push(&mut self, event: Event, target: Target) {
         let msg = OutboundMessage::new(target, event);
         self.outbound.push_back(msg);
     }

@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025 Crypts of the Lost Team
 
-#![expect(dead_code)]
-
 use super::NetworkHandler;
 use quinn::Connection;
-use std::{collections::HashSet, net::SocketAddr};
+use std::{
+    collections::{HashMap, HashSet},
+    net::SocketAddr,
+    sync::Arc,
+};
+use tokio::sync::RwLock;
 
 impl NetworkHandler {
     /// Adds a new client connection to the handler
@@ -15,8 +18,11 @@ impl NetworkHandler {
     }
 
     /// Removes a client connection from the handler
-    pub(super) async fn remove_client(&self, addr: SocketAddr) {
-        let mut connections = self.connections.write().await;
+    pub(super) async fn remove_client(
+        connections: Arc<RwLock<HashMap<SocketAddr, Connection>>>,
+        addr: SocketAddr,
+    ) {
+        let mut connections = connections.write().await;
         connections.remove(&addr);
     }
 

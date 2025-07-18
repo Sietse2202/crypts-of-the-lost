@@ -4,7 +4,7 @@
 use super::NetworkHandler;
 use crate::error::HandlerError;
 use quinn::Endpoint;
-use tracing::error;
+use tracing::{error, info};
 
 impl NetworkHandler {
     /// Starts the network handler and begins to listen for new connections
@@ -24,14 +24,16 @@ impl NetworkHandler {
                 continue;
             };
             let addr = connection.remote_address();
-            let Ok((_tx, rx)) = connection.open_bi().await else {
-                error!("error opening bidirectional stream for client {addr}");
-                continue;
-            };
+            info!("new connection with {addr}");
+            self.add_client(addr, connection.clone()).await;
 
-            let disp_tx = self.inbound_tx.clone();
+            let tx = self.inbound_tx.clone();
+            let rx = self.broadcast.subscribe();
+            let connections = self.connections.clone();
 
-            tokio::spawn(async move { Self::process_inbound(disp_tx, rx).await });
+            tokio::spawn(async move {
+                Self::handle_connection(connection, connections, tx, rx).await;
+            });
         }
 
         Ok(())

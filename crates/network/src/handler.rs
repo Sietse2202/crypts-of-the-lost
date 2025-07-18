@@ -7,7 +7,9 @@
 
 mod client;
 mod deserialize;
+mod handle_connection;
 mod inbound;
+mod outbound;
 mod serialize;
 mod start;
 
@@ -15,12 +17,15 @@ use crate::{
     cert::Certs,
     envelope::{InboundMessage, OutboundMessage},
 };
-use flume::{Receiver, Sender};
 use quinn::{Connection, Endpoint, ServerConfig};
 use std::collections::HashMap;
 use std::net::SocketAddr;
 use std::sync::Arc;
-use tokio::sync::RwLock;
+use tokio::sync::{
+    RwLock,
+    broadcast::{self, Sender},
+    mpsc::{UnboundedReceiver, UnboundedSender},
+};
 
 /// The network handler manages actual network connections and message processing
 #[derive(Debug)]
@@ -30,10 +35,10 @@ pub struct NetworkHandler {
     endpoint: Option<Endpoint>,
     /// Active connections mapped by client Address
     connections: Arc<RwLock<HashMap<SocketAddr, Connection>>>,
-    /// Channel for receiving outbound messages from the dispatcher
-    outbound_rx: Receiver<OutboundMessage>,
     /// Channel for sending inbound message to the dispatcher
-    inbound_tx: Sender<InboundMessage>,
+    inbound_tx: UnboundedSender<InboundMessage>,
+    /// Fan out of the `outbound_rx`
+    broadcast: Sender<OutboundMessage>,
     /// Server configuration for QUIC
     server_config: ServerConfig,
     /// TLS certificates and key
@@ -53,17 +58,33 @@ impl NetworkHandler {
         socket: SocketAddr,
         server_config: ServerConfig,
         certs: Certs,
-        outbound_rx: Receiver<OutboundMessage>,
-        inbound_tx: Sender<InboundMessage>,
+        outbound_rx: UnboundedReceiver<OutboundMessage>,
+        inbound_tx: UnboundedSender<InboundMessage>,
     ) -> Self {
+        let broadcast = Self::start_fan_out(outbound_rx);
         Self {
             endpoint: None,
             connections: Arc::new(RwLock::new(HashMap::new())),
-            outbound_rx,
             inbound_tx,
+            broadcast,
             server_config,
             certs,
             socket,
         }
+    }
+
+    fn start_fan_out(
+        mut outbound_rx: UnboundedReceiver<OutboundMessage>,
+    ) -> Sender<OutboundMessage> {
+        let (broadcast_tx, _) = broadcast::channel::<OutboundMessage>(1024);
+
+        let broadcast_tx_clone = broadcast_tx.clone();
+        tokio::spawn(async move {
+            while let Some(msg) = outbound_rx.recv().await {
+                let _ = broadcast_tx_clone.send(msg);
+            }
+        });
+
+        broadcast_tx
     }
 }
