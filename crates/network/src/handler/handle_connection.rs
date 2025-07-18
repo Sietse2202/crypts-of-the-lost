@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025 Crypts of the Lost Team
 
-use crate::envelope::{InboundMessage, OutboundMessage};
-
 use super::NetworkHandler;
+use crate::envelope::{InboundMessage, OutboundMessage};
 use quinn::Connection;
 use std::{collections::HashMap, net::SocketAddr, sync::Arc};
 use tokio::sync::{RwLock, broadcast::Receiver, mpsc::UnboundedSender};
@@ -22,9 +21,11 @@ impl NetworkHandler {
             return;
         };
 
-        let inbound = tokio::spawn(async move { Self::process_inbound(handler_tx, rx).await });
+        let inbound =
+            tokio::spawn(async move { Self::process_inbound(handler_tx, rx, addr).await });
 
-        let outbound = tokio::spawn(async move { Self::process_outbound(handler_rx, tx).await });
+        let outbound =
+            tokio::spawn(async move { Self::process_outbound(handler_rx, tx, addr).await });
 
         let result = tokio::select! {
             _ = inbound => "inbound",
