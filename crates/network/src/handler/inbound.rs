@@ -6,7 +6,7 @@ use crate::envelope::InboundMessage;
 use quinn::{ReadExactError, RecvStream};
 use std::net::SocketAddr;
 use tokio::sync::mpsc::UnboundedSender;
-use tracing::error;
+use tracing::{error, warn};
 
 type RecvResult = Option<Result<Vec<u8>, ReadExactError>>;
 
@@ -22,14 +22,14 @@ impl NetworkHandler {
                 continue;
             };
             let Ok(cmd) = Self::deserialize_command(&data) else {
-                error!(
+                warn!(
                     "[Stream {id}] wasn't able to deserialize following data to `Command`: {data:?}"
                 );
                 continue;
             };
             let msg = InboundMessage::new(addr, cmd);
             if let Err(e) = dispatcher_tx.send(msg) {
-                error!("[Stream {id}] failed to send data to dispatcher: {e}");
+                warn!("[Stream {id}] failed to send data to dispatcher: {e}");
             }
         }
     }
@@ -58,7 +58,7 @@ impl NetworkHandler {
                 Err(None)
             }
             Err(e) => {
-                error!("[Stream {id}] error during read: {e}");
+                warn!("[Stream {id}] error during read: {e}");
                 Err(Some(Err(e)))
             }
         }

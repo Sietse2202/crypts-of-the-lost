@@ -14,7 +14,10 @@ impl NetworkHandler {
     ///
     /// # Errors
     /// Returns an error if the endpoint cannot be created or bound to the socket.
+    #[expect(clippy::cognitive_complexity)] // fuck you clippy!! I only added one log message
     pub async fn start(&mut self) -> Result<(), HandlerError> {
+        info!("starting the networkhandler and listening to connections");
+
         let endpoint = Endpoint::server(self.server_config.clone(), self.socket)?;
         self.endpoint = Some(endpoint.clone());
 
