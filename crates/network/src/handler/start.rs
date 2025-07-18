@@ -19,13 +19,19 @@ impl NetworkHandler {
         self.endpoint = Some(endpoint.clone());
 
         while let Some(incoming) = endpoint.accept().await {
-            let _connection = match incoming.await {
-                Ok(connection) => connection,
-                Err(e) => {
-                    error!("Error during connection: {e}");
-                    continue;
-                }
+            let Ok(connection) = incoming.await else {
+                error!("Error accepting incoming connection");
+                continue;
             };
+            let addr = connection.remote_address();
+            let Ok((_tx, rx)) = connection.open_bi().await else {
+                error!("error opening bidirectional stream for client {addr}");
+                continue;
+            };
+
+            let disp_tx = self.inbound_tx.clone();
+
+            tokio::spawn(async move { Self::process_inbound(disp_tx, rx).await });
         }
 
         Ok(())

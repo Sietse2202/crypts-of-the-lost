@@ -7,6 +7,7 @@
 
 mod client;
 mod deserialize;
+mod inbound;
 mod serialize;
 mod start;
 
