@@ -47,4 +47,7 @@ pub enum HandlerError {
     /// Bincode `EncodeError`,
     #[error("EncodeError: {0}")]
     Encode(#[from] bincode::error::EncodeError),
+    /// `ConnectionError` from quinn
+    #[error("ConnectionError: {0}")]
+    Connection(#[from] quinn::ConnectionError),
 }

@@ -4,6 +4,7 @@
 use super::NetworkHandler;
 use crate::error::HandlerError;
 use quinn::Endpoint;
+use tracing::error;
 
 impl NetworkHandler {
     /// Starts the network handler and begins to listen for new connections
@@ -13,9 +14,19 @@ impl NetworkHandler {
     ///
     /// # Errors
     /// Returns an error if the endpoint cannot be created or bound to the socket.
-    pub fn start(&mut self) -> Result<(), HandlerError> {
+    pub async fn start(&mut self) -> Result<(), HandlerError> {
         let endpoint = Endpoint::server(self.server_config.clone(), self.socket)?;
-        self.endpoint = Some(endpoint);
+        self.endpoint = Some(endpoint.clone());
+
+        while let Some(incoming) = endpoint.accept().await {
+            let _connection = match incoming.await {
+                Ok(connection) => connection,
+                Err(e) => {
+                    error!("Error during connection: {e}");
+                    continue;
+                }
+            };
+        }
 
         Ok(())
     }
