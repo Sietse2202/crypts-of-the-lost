@@ -20,6 +20,7 @@ tracing = { workspace = true }
 bincode = { workspace = true }
 tokio = { workspace = true }
 protocol = { workspace = true }
+flume = { workspace = true }
 
 [lints]
 workspace = true

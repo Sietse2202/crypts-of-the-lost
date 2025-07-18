@@ -14,11 +14,12 @@ use crate::{
     cert::Certs,
     envelope::{InboundMessage, OutboundMessage},
 };
+use flume::{Receiver, Sender};
 use quinn::{Connection, Endpoint, ServerConfig};
 use std::collections::HashMap;
 use std::net::SocketAddr;
 use std::sync::Arc;
-use tokio::sync::{RwLock, mpsc};
+use tokio::sync::RwLock;
 
 /// The network handler manages actual network connections and message processing
 #[derive(Debug)]
@@ -29,9 +30,9 @@ pub struct NetworkHandler {
     /// Active connections mapped by client Address
     connections: Arc<RwLock<HashMap<SocketAddr, Connection>>>,
     /// Channel for receiving outbound messages from the dispatcher
-    outbound_rx: mpsc::UnboundedReceiver<OutboundMessage>,
+    outbound_rx: Receiver<OutboundMessage>,
     /// Channel for sending inbound message to the dispatcher
-    inbound_tx: mpsc::UnboundedSender<InboundMessage>,
+    inbound_tx: Sender<InboundMessage>,
     /// Server configuration for QUIC
     server_config: ServerConfig,
     /// TLS certificates and key
@@ -51,8 +52,8 @@ impl NetworkHandler {
         socket: SocketAddr,
         server_config: ServerConfig,
         certs: Certs,
-        outbound_rx: mpsc::UnboundedReceiver<OutboundMessage>,
-        inbound_tx: mpsc::UnboundedSender<InboundMessage>,
+        outbound_rx: Receiver<OutboundMessage>,
+        inbound_tx: Sender<InboundMessage>,
     ) -> Self {
         Self {
             endpoint: None,
