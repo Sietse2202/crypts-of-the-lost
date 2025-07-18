@@ -5,7 +5,6 @@ use super::NetworkHandler;
 
 impl NetworkHandler {
     /// Shutdowns the network handler closing all connections and channels.
-    /// Called on drop
     pub async fn shutdown(self) {
         let connections = self.connections.clone();
         let clients = self.get_clients().await;
