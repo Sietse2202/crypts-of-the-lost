@@ -18,3 +18,17 @@ pub enum Target {
     /// Sends the event to all but a group of connections
     AllBut(HashSet<SocketAddr>),
 }
+
+impl Target {
+    /// If the provided address is specified as a target
+    #[must_use]
+    pub fn is_recipient(&self, address: &SocketAddr) -> bool {
+        match self {
+            Self::All => true,
+            Self::One(addr) => addr == address,
+            Self::Group(group) => group.contains(address),
+            Self::AllBut(group) => !group.contains(address),
+            Self::AllButOne(addr) => addr != address,
+        }
+    }
+}
