@@ -35,8 +35,6 @@ pub enum DispatcherError {
     Decode(#[from] DecodeError),
 }
 
-pub(crate) type Result<T> = std::result::Result<T, DispatcherError>;
-
 /// Error type used by the [`crate::handler::NetworkHandler`]
 #[derive(Debug, Error)]
 pub enum HandlerError {

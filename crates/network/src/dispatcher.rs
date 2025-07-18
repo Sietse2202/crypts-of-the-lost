@@ -5,16 +5,12 @@
 //! Defines the [`NetworkDispatcher`] struct that coordinates the communication between
 //! the game logic and network logic.
 
-use crate::cert::Certs;
 use crate::envelope::{InboundMessage, OutboundMessage};
-use crate::error::Result;
 use crate::target::NetworkTarget;
 use protocol::command::Command;
 use protocol::event::Event;
-use quinn::{Connection, Endpoint, ServerConfig};
 use std::collections::{HashSet, VecDeque};
 use std::net::SocketAddr;
-use tracing::{error, info};
 
 /// The network-dispatcher, this handles all connections between server and clients.
 #[derive(Debug)]
@@ -52,7 +48,7 @@ impl NetworkDispatcher {
         &self.clients
     }
 
-    pub(crate) fn add_client(&mut self, client: SocketAddr) {
+    pub(crate) fn _add_client(&mut self, client: SocketAddr) {
         self.clients.insert(client);
     }
 
@@ -69,62 +65,4 @@ impl NetworkDispatcher {
         let msg = self.inbound.pop_front()?;
         Some(msg.command)
     }
-
-    /// Listens for connections on `self.socket`, uses `handle_conn` to handle each connection
-    /// encountered by the server.
-    ///
-    /// # Errors
-    /// The function may error due to one of
-    /// - IO errors
-    /// - Connection errors
-    pub async fn listen<F>(
-        mut self,
-        config: ServerConfig,
-        handle_conn: F,
-        certs: Certs,
-    ) -> Result<()>
-    where
-        F: AsyncFn(Connection) -> Result<()> + Copy + Send + Sync + 'static,
-        for<'a> F::CallRefFuture<'a>: Send,
-    {
-        let endpoint = Endpoint::server(config, self.socket)?;
-        let (_certs, _key) = (certs.certs(), certs.key());
-
-        while let Some(conn) = endpoint.accept().await {
-            let connection = conn.await?;
-
-            let addr = connection.remote_address();
-            self.add_client(addr);
-
-            tokio::spawn(async move {
-                if let Err(e) = handle_conn(connection).await {
-                    error!("Error while handling connection {addr}: {e}");
-                }
-            });
-        }
-
-        Ok(())
-    }
-}
-
-/// Default connection handler
-///
-/// # Errors
-/// TODO: fix the errors section
-pub async fn default_handler(conn: Connection) -> Result<()> {
-    info!("New connection at {}", conn.remote_address());
-
-    while let Ok((_send, mut recv)) = conn.accept_bi().await {
-        let mut len_buf = [0u8; 4];
-        recv.read(&mut len_buf).await?;
-        let len = u32::from_be_bytes(len_buf);
-
-        let mut buf = vec![0u8; len as usize];
-        recv.read(&mut buf).await?;
-
-        let (_response, _byte_count): (Command, _) =
-            bincode::decode_from_slice(&buf, bincode::config::standard())?;
-    }
-
-    Ok(())
 }
