@@ -8,7 +8,6 @@
 #![expect(clippy::multiple_crate_versions)]
 
 pub mod cert;
-pub mod dispatcher;
 mod envelope;
 pub mod error;
 pub mod handler;
