@@ -7,7 +7,7 @@ Thank you for your interest in contributing to this project! We welcome all type
 ## Style guide
 
 - Cody style is enforced using clippy.
-- Avoid surpressing lints.
+- Avoid suppressing lints.
 - Follow idiomatic Rust practices and keep code readable.
 
 ---
