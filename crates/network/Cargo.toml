@@ -17,8 +17,7 @@ quinn = "0.11.8"
 thiserror = { workspace = true }
 rustls-pki-types = "1.12.0"
 tracing = { workspace = true }
-serde = { workspace = true }
-bincode = { version = "2.0.1", features = ["serde"] }
+bincode = { workspace = true }
 tokio = { workspace = true }
 protocol = { workspace = true }
 

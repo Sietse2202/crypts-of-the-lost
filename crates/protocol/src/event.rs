@@ -6,13 +6,18 @@
 //! to the client.
 
 mod inner;
-use inner::EventInner;
+pub mod join_accept;
+pub mod player_joined;
 
-use serde::{Deserialize, Serialize};
+use bincode::{Decode, Encode};
+pub use inner::EventInner;
 
 /// Message from the server, to the client
-#[derive(Serialize, Deserialize, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
+#[derive(Encode, Decode, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
 #[non_exhaustive]
-pub struct Event {
-    inner: EventInner,
+pub enum Event {
+    /// Gets send when a new player joins
+    JoinAccept(join_accept::JoinAccept),
+    /// A new player joined
+    PlayerJoined(player_joined::PlayerJoined),
 }

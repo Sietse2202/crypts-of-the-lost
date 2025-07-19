@@ -5,11 +5,11 @@ It is used by the client to send specific commands or requests to the server,
 starting with `Connect` and continuing with actions such as `OpenInventory`
 
 ```rust
-pub struct Command {
-    inner: CommandInner,
+pub enum Command {
+    Join(join::Join),
 }
 ```
 
-| Field   | Type                                 | Description                          |
-| ------- | ------------------------------------ | ------------------------------------ |
-| `inner` | [`CommandInner`](./command/inner.md) | The command type and its information |
+| Variant | Description                  | Data                            |
+| ------- | ---------------------------- | ------------------------------- |
+| `Join`  | A request to join the server | Holds [Join](./command/join.md) |

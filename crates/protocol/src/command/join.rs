@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025 Crypts of the Lost Team
 
-//! # `JoinAccept`
+//! # Join
 //! For information about the protocol please go to the following [url](https://Sietse2202.github.io/crypts-of-the-lost/).
 
-use crate::target::ClientTarget;
+use crate::command::CommandInner;
 
-/// Additional metadata which every event needs
+/// The command sent to the server after successful connection to it.
 #[derive(
     bincode::Encode, bincode::Decode, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash,
 )]
-pub struct EventInner {
-    target: ClientTarget,
+pub struct Join {
+    inner: CommandInner,
 }
