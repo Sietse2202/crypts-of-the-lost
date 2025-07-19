@@ -6,13 +6,15 @@
 //! to the server.
 
 mod inner;
-use inner::CommandInner;
+pub mod join;
 
 use bincode::{Decode, Encode};
+pub use inner::CommandInner;
 
 /// Command from the client to the server
 #[derive(Encode, Decode, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
 #[non_exhaustive]
-pub struct Command {
-    inner: CommandInner,
+pub enum Command {
+    /// New connection
+    Join(join::Join),
 }
