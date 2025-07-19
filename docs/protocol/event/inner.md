@@ -1,10 +1,10 @@
 # EventInner
 
-The `EventInner` enum represents the actual event.
+The `EventInner` struct represents metadata which is required by each event.
 
 ```rust
 pub enum EventInner {}
 ```
 
-| Variant | Description | Data |
-| ------- | ----------- | ---- |
+| Field | Type | Description |
+| ----- | ---- | ----------- |

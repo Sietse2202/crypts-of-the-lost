@@ -5,11 +5,13 @@ It is used by the server to send game or system events to the client, ranging
 from `ConnectionAccepted` and `PositionUpdate` to `ChatMessage`.
 
 ```rust
-pub struct Event {
-    inner: EventInner,
+pub enum Event {
+    JoinAccept(join_accept::JoinAccept),
+    PlayerJoined(player_joined::PlayerJoined),
 }
 ```
 
-| Field   | Type                             | Description                        |
-| ------- | -------------------------------- | ---------------------------------- |
-| `inner` | [`EventInner`](./event/inner.md) | The event kind and its information |
+| Variant        | Description                       | Data                                           |
+| -------------- | --------------------------------- | ---------------------------------------------- |
+| `JoinAccept`   | Gets send when a new player joins | Holds [JoinAccept](./event/join_accept.md)     |
+| `PlayerJoined` | A new player joined               | Holds [PlayerJoined](./event/player_joined.md) |

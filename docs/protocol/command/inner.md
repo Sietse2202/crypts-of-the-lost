@@ -1,10 +1,10 @@
 # CommandInner
 
-The `CommandInner` enum represents the actual command.
+The `CommandInner` struct represents some extra metadata about which is required by each Command.
 
 ```rust
-pub enum CommandInner {}
+pub struct CommandInner {}
 ```
 
-| Variant | Description | Data |
-| ------- | ----------- | ---- |
+| Field | Type | Description |
+| ----- | ---- | ----------- |
