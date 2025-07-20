@@ -17,6 +17,8 @@ use command_receiver::process_incoming_commands;
 use protocol::{command::Command, event::Event};
 use tracing::info;
 
+use crate::command_receiver::CommandReceiver;
+
 /// Dispatcher plugin for ease of use
 #[derive(Debug)]
 pub struct Dispatcher;
@@ -34,4 +36,6 @@ fn setup(mut commands: Commands) {
 
     let (inbound_tx, inbound_rx) = tokio::sync::mpsc::unbounded_channel::<Command>();
     let (outbound_tx, outbound_rx) = tokio::sync::mpsc::unbounded_channel::<Event>();
+
+    commands.insert_resource(CommandReceiver { rx: inbound_rx });
 }
