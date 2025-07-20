@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2025 Crypts of the Lost Team
+
 [package]
 name = "server"
 version = "0.1.0"
@@ -6,11 +9,13 @@ description = "Crypt of the Lost server-side"
 license-file = "../../LICENSE"
 repository = "https://github.com/Sietse2202/crypts-of-the-lost"
 readme = "../../README.md"
-keywords = ["xtask"]
+keywords = ["server", "game"]
 categories = ["games"]
 
 [dependencies]
-clap = { version = "4.5.41", features = ["derive"] }
+clap = { workspace = true }
+network = { workspace = true }
+protocol = { workspace = true }
 
 [lints]
 workspace = true

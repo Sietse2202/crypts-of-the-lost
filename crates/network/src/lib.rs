@@ -1,22 +1,19 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2025 Crypts of the Lost Team
+
 //! # Networking
 //! This crate handles all networking code between the client and the server, this also
-//! specifies the interface they use to communicate.
-//!
-//! ---
-//!
-//! ```md
-//! Copyright (C) 2025  Crypts of the Lost Team
-//!
-//! This program is free software: you can redistribute it and/or modify
-//! it under the terms of the GNU Affero General Public License as
-//! published by the Free Software Foundation, either version 3 of the
-//! License, or (at your option) any later version.
-//!
-//! This program is distributed in the hope that it will be useful,
-//! but WITHOUT ANY WARRANTY; without even the implied warranty of
-//! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//! GNU Affero General Public License for more details.
-//!
-//! You should have received a copy of the GNU Affero General Public License
-//! along with this program.  If not, see <https://www.gnu.org/licenses/>.
-//! ```
+//! specifies the protocol they use to communicate.
+
+#![expect(clippy::multiple_crate_versions)]
+
+mod cert;
+mod envelope;
+mod error;
+mod handler;
+mod target;
+
+pub use cert::Certs;
+pub use error::{CertsError, HandlerError};
+pub use handler::NetworkHandler;
+pub use target::Target;

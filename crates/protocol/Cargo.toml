@@ -2,25 +2,18 @@
 # Copyright (C) 2025 Crypts of the Lost Team
 
 [package]
-name = "network"
+name = "protocol"
 version = "0.1.0"
 edition = "2024"
-description = "Crypt of the Lost networking"
+description = "Crypt of the Lost protocol"
 license-file = "../../LICENSE"
 repository = "https://github.com/Sietse2202/crypts-of-the-lost"
 readme = "../../README.md"
-keywords = ["network"]
+keywords = ["network", "protocol"]
 categories = ["games"]
 
 [dependencies]
-quinn = "0.11.8"
-thiserror = { workspace = true }
-rustls-pki-types = "1.12.0"
-tracing = { workspace = true }
 bincode = { workspace = true }
-tokio = { workspace = true }
-protocol = { workspace = true }
-dashmap = "6.1.0"
 
 [lints]
 workspace = true
