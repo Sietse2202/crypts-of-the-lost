@@ -3,15 +3,16 @@
 
 use super::NetworkHandler;
 use crate::envelope::{InboundMessage, OutboundMessage};
+use dashmap::DashMap;
 use quinn::Connection;
-use std::{collections::HashMap, net::SocketAddr, sync::Arc};
-use tokio::sync::{RwLock, broadcast::Receiver, mpsc::UnboundedSender};
+use std::{net::SocketAddr, sync::Arc};
+use tokio::sync::{broadcast::Receiver, mpsc::UnboundedSender};
 use tracing::{error, info};
 
 impl NetworkHandler {
     pub(super) async fn handle_connection(
         connection: Connection,
-        connections: Arc<RwLock<HashMap<SocketAddr, Connection>>>,
+        connections: Arc<DashMap<SocketAddr, Connection>>,
         handler_tx: UnboundedSender<InboundMessage>,
         handler_rx: Receiver<OutboundMessage>,
     ) {
@@ -33,6 +34,6 @@ impl NetworkHandler {
         };
 
         info!("cleaning up connections for {addr} (reason: {result} ended");
-        Self::remove_client(connections, addr, 0, b"Connection handler ended").await;
+        Self::remove_client(&connections, addr, 0, b"Connection handler ended");
     }
 }

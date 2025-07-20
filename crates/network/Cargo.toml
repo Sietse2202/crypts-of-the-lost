@@ -20,6 +20,7 @@ tracing = { workspace = true }
 bincode = { workspace = true }
 tokio = { workspace = true }
 protocol = { workspace = true }
+dashmap = "6.1.0"
 
 [lints]
 workspace = true
