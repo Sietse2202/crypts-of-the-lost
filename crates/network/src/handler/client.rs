@@ -2,37 +2,32 @@
 // Copyright (C) 2025 Crypts of the Lost Team
 
 use super::NetworkHandler;
+use dashmap::DashMap;
 use quinn::Connection;
-use std::{
-    collections::{HashMap, HashSet},
-    net::SocketAddr,
-    sync::Arc,
-};
-use tokio::sync::RwLock;
+use std::{collections::HashSet, net::SocketAddr, sync::Arc};
 
 impl NetworkHandler {
     /// Adds a new client connection to the handler
-    pub(super) async fn add_client(&self, addr: SocketAddr, conn: Connection) {
-        let mut connections = self.connections.write().await;
-        connections.insert(addr, conn);
+    pub(super) fn add_client(&self, addr: SocketAddr, conn: Connection) {
+        self.connections.insert(addr, conn);
     }
 
     /// Removes a client connection from the handler
-    pub(super) async fn remove_client(
-        connections: Arc<RwLock<HashMap<SocketAddr, Connection>>>,
+    pub(super) fn remove_client(
+        connections: &Arc<DashMap<SocketAddr, Connection>>,
         addr: SocketAddr,
         error_code: u32,
         reason: &[u8],
     ) {
-        let Some(connection) = connections.write().await.remove(&addr) else {
+        let Some((_, connection)) = connections.remove(&addr) else {
             return;
         };
         connection.close(error_code.into(), reason);
     }
 
     /// Gets all currently connected client addresses
-    pub async fn get_clients(&self) -> HashSet<SocketAddr> {
-        let connections = self.connections.read().await;
-        connections.keys().copied().collect()
+    #[must_use]
+    pub fn get_clients(&self) -> HashSet<SocketAddr> {
+        self.connections.iter().map(|item| *item.key()).collect()
     }
 }
