@@ -2,11 +2,25 @@
 // Copyright (C) 2025 Crypts of the Lost Team
 
 //! # `JoinAccept`
-//! For information about the protocol, please go to the following
-//! [url](https://Sietse2202.github.io/crypts-of-the-lost/).
+//! For information about the protocol please go to the following [url](https://Sietse2202.github.io/crypts-of-the-lost/).
+
+use crate::event::EventInner;
+use bevy::ecs::event::Event;
 
 /// Event from the server to the client whose join command got accepted
 #[derive(
-    bincode::Encode, bincode::Decode, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash,
+    bincode::Encode,
+    bincode::Decode,
+    Debug,
+    Ord,
+    PartialOrd,
+    Eq,
+    PartialEq,
+    Copy,
+    Clone,
+    Hash,
+    Event,
 )]
-pub struct JoinAccept {}
+pub struct JoinAccept {
+    inner: EventInner,
+}
