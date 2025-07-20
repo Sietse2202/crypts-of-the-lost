@@ -7,8 +7,13 @@
 
 #![expect(clippy::multiple_crate_versions)]
 
-pub mod cert;
+mod cert;
 mod envelope;
-pub mod error;
-pub mod handler;
-pub mod target;
+mod error;
+mod handler;
+mod target;
+
+pub use cert::Certs;
+pub use error::{CertsError, HandlerError};
+pub use handler::NetworkHandler;
+pub use target::Target;
