@@ -6,7 +6,7 @@
 
 use thiserror::Error;
 
-/// Error type used by the [`crate::handler::NetworkHandler`]
+/// Error type used by [`crate::handler::NetworkHandler`]
 #[derive(Debug, Error)]
 pub enum HandlerError {
     /// Error from IO
@@ -21,4 +21,15 @@ pub enum HandlerError {
     /// `ConnectionError` from quinn
     #[error("ConnectionError: {0}")]
     Connection(#[from] quinn::ConnectionError),
+}
+
+/// Error type used by [`crate::Certs`]
+#[derive(Debug, Error)]
+pub enum CertsError {
+    /// Error when reading and parsing the cert and key files
+    #[error("pem error: {0}")]
+    Pem(#[from] rustls_pki_types::pem::Error),
+    /// Error when creating a `ServerConfig` using the read certs and key
+    #[error("serverconfig error: {0}")]
+    Quinn(#[from] quinn::crypto::rustls::Error),
 }

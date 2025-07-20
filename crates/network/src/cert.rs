@@ -4,11 +4,13 @@
 //! # Cert
 //! This module has some helper functions for working with certificates
 
-use std::path::Path;
-
+use quinn::ServerConfig;
 use quinn::rustls::pki_types::pem::PemObject;
 use quinn::rustls::pki_types::{CertificateDer, PrivateKeyDer};
 use rustls_pki_types::pem;
+use std::path::Path;
+
+use crate::error::CertsError;
 
 /// A helper struct that just cleans the function signatures up.
 #[derive(Debug, PartialEq, Eq)]
@@ -48,6 +50,14 @@ impl Certs {
         let key = PrivateKeyDer::from_pem_file(key_path)?;
 
         Ok(Self::new(certs, key))
+    }
+
+    /// Creates a [`ServerConfig`] to be used by the `NetworkHandler`
+    ///
+    /// # Errors
+    /// Returns an `CertsError` when `ServerConfig` creation fails.
+    pub fn create_server_config(self) -> Result<ServerConfig, CertsError> {
+        Ok(ServerConfig::with_single_cert(self.certs, self.key)?)
     }
 }
 

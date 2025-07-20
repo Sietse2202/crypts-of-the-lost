@@ -14,10 +14,7 @@ mod serialize;
 mod shutdown;
 mod start;
 
-use crate::{
-    cert::Certs,
-    envelope::{InboundMessage, OutboundMessage},
-};
+use crate::envelope::{InboundMessage, OutboundMessage};
 use quinn::{Connection, Endpoint, ServerConfig};
 use std::collections::HashMap;
 use std::net::SocketAddr;
@@ -30,7 +27,6 @@ use tokio::sync::{
 
 /// The network handler manages actual network connections and message processing
 #[derive(Debug)]
-#[expect(dead_code)]
 pub struct NetworkHandler {
     /// The QUIC endpoint for handling connections
     endpoint: Option<Endpoint>,
@@ -42,8 +38,6 @@ pub struct NetworkHandler {
     broadcast: Sender<OutboundMessage>,
     /// Server configuration for QUIC
     server_config: ServerConfig,
-    /// TLS certificates and key
-    certs: Certs,
     /// Socket address to bind to
     socket: SocketAddr,
 }
@@ -58,7 +52,6 @@ impl NetworkHandler {
     pub fn new(
         socket: SocketAddr,
         server_config: ServerConfig,
-        certs: Certs,
         outbound_rx: UnboundedReceiver<OutboundMessage>,
         inbound_tx: UnboundedSender<InboundMessage>,
     ) -> Self {
@@ -69,7 +62,6 @@ impl NetworkHandler {
             inbound_tx,
             broadcast,
             server_config,
-            certs,
             socket,
         }
     }
