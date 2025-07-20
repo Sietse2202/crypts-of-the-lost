@@ -21,22 +21,8 @@ impl Certs {
     /// Creates a new instance
     #[inline]
     #[must_use]
-    pub const fn new(certs: Vec<CertificateDer<'static>>, key: PrivateKeyDer<'static>) -> Self {
+    const fn new(certs: Vec<CertificateDer<'static>>, key: PrivateKeyDer<'static>) -> Self {
         Self { certs, key }
-    }
-
-    /// Gets the certificates from the instance
-    #[inline]
-    #[must_use]
-    pub const fn certs(&self) -> &Vec<CertificateDer<'static>> {
-        &self.certs
-    }
-
-    /// Gets the key from the instance
-    #[inline]
-    #[must_use]
-    pub const fn key(&self) -> &PrivateKeyDer<'static> {
-        &self.key
     }
 
     /// Loads TLS certificates from disk.
@@ -48,11 +34,13 @@ impl Certs {
     /// man-in-the-middle (MITM) attacks unless the client explicitly trusts them.
     ///
     /// # Errors
-    /// This function errors due to any of the following
-    /// - IO error
-    /// - File not found
-    /// - Parsing error in the files
-    pub fn read_from_file<P: AsRef<Path>>(cert_path: P, key_path: P) -> Result<Self, pem::Error> {
+    /// Returns an `pem::Error` if the path is wrong or it can't read or parse the
+    /// certificates and keys
+    pub fn read_from_file<P, Q>(cert_path: P, key_path: Q) -> Result<Self, pem::Error>
+    where
+        P: AsRef<Path>,
+        Q: AsRef<Path>,
+    {
         let certs_result: Result<Vec<_>, _> = CertificateDer::pem_file_iter(cert_path)?.collect();
 
         let certs = certs_result?;
@@ -63,19 +51,15 @@ impl Certs {
     }
 }
 
-impl From<(Vec<CertificateDer<'static>>, PrivateKeyDer<'static>)> for Certs {
-    fn from(value: (Vec<CertificateDer<'static>>, PrivateKeyDer<'static>)) -> Self {
-        Self::new(value.0, value.1)
-    }
-}
-
 #[cfg(test)]
 mod tests {
+
     use super::*;
 
     #[test]
     fn read_success() {
-        let cert = Certs::read_from_file("./certs.pem", "./key.pem");
+        // the files need to be in the root of this repository
+        let cert = Certs::read_from_file("../../certs.pem", "../../key.pem");
         assert!(cert.is_ok());
     }
 }
