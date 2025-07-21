@@ -10,9 +10,7 @@
 mod cert;
 mod error;
 mod handler;
-mod target;
 
 pub use cert::Certs;
 pub use error::{CertsError, HandlerError};
 pub use handler::NetworkHandler;
-pub use target::Target;

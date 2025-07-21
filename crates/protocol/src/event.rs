@@ -13,7 +13,7 @@ use bincode::{Decode, Encode};
 pub use inner::EventInner;
 
 /// Message from the server, to the client
-#[derive(Encode, Decode, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
+#[derive(Encode, Decode, Debug, Eq, PartialEq, Clone)]
 #[non_exhaustive]
 pub enum Event {
     /// Gets send when a new player joins
