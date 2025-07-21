@@ -7,11 +7,11 @@
 
 #![expect(clippy::multiple_crate_versions)]
 
-mod config;
+pub mod config;
 pub use config::Config;
 
 mod cli;
-pub use cli::Cli;
+use cli::Cli;
 
 mod parse;
 pub use parse::parse_config;
