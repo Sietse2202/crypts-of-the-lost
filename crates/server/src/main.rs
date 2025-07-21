@@ -9,11 +9,4 @@
 
 #![expect(clippy::multiple_crate_versions)]
 
-use clap::Parser;
-
-#[derive(Parser, Debug, Copy, Clone, PartialEq, Ord, PartialOrd, Eq, Hash, Default)]
-struct Cli {}
-
-fn main() {
-    let _args = Cli::parse();
-}
+const fn main() {}
