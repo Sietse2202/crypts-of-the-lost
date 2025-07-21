@@ -611,7 +611,7 @@ name = "dispatcher"
 version = "0.1.0"
 dependencies = [
  "bevy",
- "network",
+ "handler",
  "protocol",
  "tokio",
  "tracing",
@@ -733,6 +733,20 @@ dependencies = [
  "bytemuck",
  "libm",
  "serde",
+]
+
+[[package]]
+name = "handler"
+version = "0.1.0"
+dependencies = [
+ "bincode",
+ "dashmap",
+ "protocol",
+ "quinn",
+ "rustls-pki-types",
+ "thiserror 2.0.12",
+ "tokio",
+ "tracing",
 ]
 
 [[package]]
@@ -903,20 +917,6 @@ dependencies = [
  "libc",
  "wasi 0.11.1+wasi-snapshot-preview1",
  "windows-sys 0.59.0",
-]
-
-[[package]]
-name = "network"
-version = "0.1.0"
-dependencies = [
- "bincode",
- "dashmap",
- "protocol",
- "quinn",
- "rustls-pki-types",
- "thiserror 2.0.12",
- "tokio",
- "tracing",
 ]
 
 [[package]]

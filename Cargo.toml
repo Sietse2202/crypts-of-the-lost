@@ -4,17 +4,17 @@
 [workspace]
 members = [
     "crates/server",
-    "crates/network",
+    "crates/network/handler",
     "crates/protocol",
-    "crates/dispatcher",
+    "crates/network/dispatcher",
     "xtask", 
 ]
 resolver = "2"
 
 [workspace.dependencies]
 protocol.path = "crates/protocol"
-network.path = "crates/network"
-dispatcher.path = "crates/dispatcher"
+handler.path = "crates/network/handler"
+dispatcher.path = "crates/network/dispatcher"
 
 clap = { version = "4.5.41", features = ["derive"] }
 thiserror = "2.0.12"
