@@ -19,7 +19,6 @@ const TPS: f64 = 16.;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let config = parse_config()?;
-    println!("{config:?}");
 
     App::new()
         .add_plugins(
@@ -29,6 +28,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         )
         .add_plugins(Protocol)
         .add_plugins(Network)
+        .insert_resource(config)
         .run();
 
     Ok(())
