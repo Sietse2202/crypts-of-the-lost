@@ -1,23 +1,20 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
-# Copyright (C) 2025 Crypts of the Lost Team
-
 [package]
-name = "server"
+name = "config"
 version = "0.1.0"
 edition = "2024"
-description = "Crypt of the Lost server-side"
+description = "Crypt of the Lost config"
 license-file = "../../LICENSE"
 repository = "https://github.com/Sietse2202/crypts-of-the-lost"
 readme = "../../README.md"
-keywords = ["server", "game"]
+keywords = ["config"]
 categories = ["games"]
 
 [dependencies]
 clap.workspace = true
-protocol.workspace = true
-dispatcher.workspace = true
+serde = { version = "1.0.219", features = ["derive"] }
+toml = "0.9.2"
 bevy.workspace = true
-config.workspace = true
+figment = { version = "0.10.19", features = ["toml"] }
 
 [lints]
 workspace = true

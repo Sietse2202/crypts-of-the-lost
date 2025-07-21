@@ -4,12 +4,10 @@
 //! # `JoinAccept`
 //! For information about the protocol please go to the following [url](https://Sietse2202.github.io/crypts-of-the-lost/).
 
-use crate::target::ClientTarget;
+use crate::target::Target;
 
 /// Additional metadata which every event needs
-#[derive(
-    bincode::Encode, bincode::Decode, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash,
-)]
+#[derive(bincode::Encode, bincode::Decode, Debug, Eq, PartialEq, Clone)]
 pub struct EventInner {
-    target: ClientTarget,
+    target: Target,
 }
