@@ -10,18 +10,15 @@
 #![expect(clippy::multiple_crate_versions)]
 
 use bevy::prelude::*;
-use clap::Parser;
+use config::parse_config;
 use dispatcher::Network;
 use protocol::Protocol;
 use std::time::Duration;
 
 const TPS: f64 = 16.;
 
-#[derive(Parser, Debug, Copy, Clone, PartialEq, Ord, PartialOrd, Eq, Hash, Default)]
-struct Cli {}
-
-fn main() {
-    let _args = Cli::parse();
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let config = parse_config()?;
 
     App::new()
         .add_plugins(
@@ -31,5 +28,8 @@ fn main() {
         )
         .add_plugins(Protocol)
         .add_plugins(Network)
+        .insert_resource(config)
         .run();
+
+    Ok(())
 }
