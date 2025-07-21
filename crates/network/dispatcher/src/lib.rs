@@ -20,7 +20,8 @@ use tracing::info;
 
 use crate::command_receiver::CommandReceiver;
 
-/// Dispatcher plugin for ease of use
+/// Network plugin which starts the `NetworkHandler` and
+/// the dispatchers.
 #[derive(Debug)]
 pub struct Network;
 
