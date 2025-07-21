@@ -14,7 +14,7 @@ use bevy::{
 
 mod command_receiver;
 use command_receiver::process_incoming_commands;
-use network::Certs;
+use handler::Certs;
 use protocol::{command::Command, event::Event};
 use tracing::info;
 
@@ -22,9 +22,9 @@ use crate::command_receiver::CommandReceiver;
 
 /// Dispatcher plugin for ease of use
 #[derive(Debug)]
-pub struct Dispatcher;
+pub struct Network;
 
-impl Plugin for Dispatcher {
+impl Plugin for Network {
     fn build(&self, app: &mut bevy::app::App) {
         app.add_systems(Startup, setup)
             .add_systems(Update, process_incoming_commands);

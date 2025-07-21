@@ -11,7 +11,7 @@
 
 use bevy::prelude::*;
 use clap::Parser;
-use dispatcher::Dispatcher;
+use dispatcher::Network;
 use protocol::Protocol;
 use std::time::Duration;
 
@@ -30,6 +30,6 @@ fn main() {
             )),
         )
         .add_plugins(Protocol)
-        .add_plugins(Dispatcher)
+        .add_plugins(Network)
         .run();
 }

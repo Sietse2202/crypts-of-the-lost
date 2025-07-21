@@ -14,7 +14,7 @@ protocol.workspace = true
 bevy.workspace = true
 tokio.workspace = true
 tracing.workspace = true
-network.workspace = true
+handler.workspace = true
 
 [lints]
 workspace = true
