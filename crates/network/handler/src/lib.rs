@@ -8,7 +8,6 @@
 #![expect(clippy::multiple_crate_versions)]
 
 mod cert;
-mod envelope;
 mod error;
 mod handler;
 mod target;

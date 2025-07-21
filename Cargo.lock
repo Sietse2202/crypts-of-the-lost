@@ -631,6 +631,7 @@ name = "dispatcher"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "config",
  "handler",
  "protocol",
  "tokio",
