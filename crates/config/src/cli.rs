@@ -8,10 +8,10 @@
 use std::path::PathBuf;
 
 /// CLI struct to provide the config file and overwrite settings from it.
-#[derive(Debug, clap::Parser)]
+#[derive(Debug, clap::Parser, serde::Serialize)]
 #[command(author = "Crypts of the Lost")]
 pub struct Cli {
     /// The path to the config file (default = `config.toml`)
-    #[arg(short, long, default_value = "config.toml")]
-    config: PathBuf, // ignored by figment
+    #[arg(short, long)]
+    pub config: Option<PathBuf>, // ignored by figment
 }

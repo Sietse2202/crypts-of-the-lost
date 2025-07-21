@@ -7,6 +7,7 @@ members = [
     "crates/network/handler",
     "crates/protocol",
     "crates/network/dispatcher",
+    "crates/config",
     "xtask",
 ]
 resolver = "2"
@@ -15,6 +16,7 @@ resolver = "2"
 protocol.path = "crates/protocol"
 handler.path = "crates/network/handler"
 dispatcher.path = "crates/network/dispatcher"
+config.path = "crates/config"
 
 clap = { version = "4.5.41", features = ["derive"] }
 

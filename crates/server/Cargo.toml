@@ -17,6 +17,7 @@ clap.workspace = true
 protocol.workspace = true
 dispatcher.workspace = true
 bevy.workspace = true
+config.workspace = true
 
 [lints]
 workspace = true
