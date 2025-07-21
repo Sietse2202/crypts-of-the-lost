@@ -9,4 +9,27 @@
 
 #![expect(clippy::multiple_crate_versions)]
 
-const fn main() {}
+use bevy::prelude::*;
+use clap::Parser;
+use dispatcher::Network;
+use protocol::Protocol;
+use std::time::Duration;
+
+const TPS: f64 = 16.;
+
+#[derive(Parser, Debug, Copy, Clone, PartialEq, Ord, PartialOrd, Eq, Hash, Default)]
+struct Cli {}
+
+fn main() {
+    let _args = Cli::parse();
+
+    App::new()
+        .add_plugins(
+            MinimalPlugins.set(bevy::app::ScheduleRunnerPlugin::run_loop(
+                Duration::from_secs_f64(1. / TPS),
+            )),
+        )
+        .add_plugins(Protocol)
+        .add_plugins(Network)
+        .run();
+}

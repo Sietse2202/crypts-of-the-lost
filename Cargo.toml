@@ -4,15 +4,17 @@
 [workspace]
 members = [
     "crates/server",
-    "crates/network",
+    "crates/network/handler",
     "crates/protocol",
-    "xtask"
-, "crates/config"]
+    "crates/network/dispatcher",
+    "xtask",
+]
 resolver = "2"
 
 [workspace.dependencies]
-protocol = { path = "crates/protocol" }
-network = { path = "crates/network" }
+protocol.path = "crates/protocol"
+handler.path = "crates/network/handler"
+dispatcher.path = "crates/network/dispatcher"
 
 clap = { version = "4.5.41", features = ["derive"] }
 
@@ -22,6 +24,10 @@ tracing = "0.1.41"
 bincode = "2.0.1"
 
 tokio = { version = "1.46.1", features = ["macros"] }
+
+[workspace.dependencies.bevy]
+version = "0.16.1"
+default-features = false
 
 [workspace.lints.rust]
 unsafe_code = "deny"
