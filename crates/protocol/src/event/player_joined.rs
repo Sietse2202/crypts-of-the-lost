@@ -8,19 +8,7 @@ use crate::event::EventInner;
 use bevy::ecs::event::Event;
 
 /// New player joined. Gets sent to everyone except the new player
-#[derive(
-    bincode::Encode,
-    bincode::Decode,
-    Debug,
-    Ord,
-    PartialOrd,
-    Eq,
-    PartialEq,
-    Copy,
-    Clone,
-    Hash,
-    Event,
-)]
+#[derive(bincode::Encode, bincode::Decode, Debug, Eq, PartialEq, Clone, Event)]
 pub struct PlayerJoined {
     inner: EventInner,
 }

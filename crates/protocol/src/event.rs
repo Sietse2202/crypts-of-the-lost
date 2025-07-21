@@ -5,22 +5,17 @@
 //! This module contains all types used for the communication from the server
 //! to the client.
 
+mod inner;
 pub mod join_accept;
 pub mod player_joined;
 
 use bincode::{Decode, Encode};
+pub use inner::EventInner;
 
 /// Message from the server, to the client
-#[derive(Encode, Decode, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
-pub struct Event {
-    /// The type of event it is
-    pub event_type: EventType,
-}
-
-/// The type of message from the server, to the client
-#[derive(Encode, Decode, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
+#[derive(Encode, Decode, Debug, Eq, PartialEq, Clone)]
 #[non_exhaustive]
-pub enum EventType {
+pub enum Event {
     /// Gets send when a new player joins
     JoinAccept(join_accept::JoinAccept),
     /// A new player joined

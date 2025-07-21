@@ -8,19 +8,7 @@ use crate::event::EventInner;
 use bevy::ecs::event::Event;
 
 /// Event from the server to the client whose join command got accepted
-#[derive(
-    bincode::Encode,
-    bincode::Decode,
-    Debug,
-    Ord,
-    PartialOrd,
-    Eq,
-    PartialEq,
-    Copy,
-    Clone,
-    Hash,
-    Event,
-)]
+#[derive(bincode::Encode, bincode::Decode, Debug, Eq, PartialEq, Clone, Event)]
 pub struct JoinAccept {
     inner: EventInner,
 }
