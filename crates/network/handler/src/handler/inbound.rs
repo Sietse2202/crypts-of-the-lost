@@ -2,9 +2,8 @@
 // Copyright (C) 2025 Crypts of the Lost Team
 
 use super::NetworkHandler;
-use crate::envelope::InboundMessage;
+use protocol::command::Command;
 use quinn::{ReadExactError, RecvStream};
-use std::net::SocketAddr;
 use tokio::sync::mpsc::UnboundedSender;
 use tracing::{error, warn};
 
@@ -12,9 +11,8 @@ type RecvResult = Option<Result<Vec<u8>, ReadExactError>>;
 
 impl NetworkHandler {
     pub(super) async fn process_inbound(
-        dispatcher_tx: UnboundedSender<InboundMessage>,
+        dispatcher_tx: UnboundedSender<Command>,
         mut conn_rx: RecvStream,
-        addr: SocketAddr,
     ) {
         let id = conn_rx.id();
         while let Some(data) = Self::receive_command(&mut conn_rx).await {
@@ -27,8 +25,7 @@ impl NetworkHandler {
                 );
                 continue;
             };
-            let msg = InboundMessage::new(addr, cmd);
-            if let Err(e) = dispatcher_tx.send(msg) {
+            if let Err(e) = dispatcher_tx.send(cmd) {
                 warn!("[Stream {id}] failed to send data to dispatcher: {e}");
             }
         }

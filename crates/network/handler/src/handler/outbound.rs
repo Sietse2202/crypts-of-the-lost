@@ -2,23 +2,20 @@
 // Copyright (C) 2025 Crypts of the Lost Team
 
 use super::NetworkHandler;
-use crate::envelope::OutboundMessage;
-use std::net::SocketAddr;
+use protocol::event::Event;
 use tokio::sync::broadcast::Receiver;
 use tracing::{error, warn};
 
 impl NetworkHandler {
     pub(super) async fn process_outbound(
-        mut dispatcher_rx: Receiver<OutboundMessage>,
+        mut dispatcher_rx: Receiver<Event>,
         mut conn_tx: quinn::SendStream,
-        addr: SocketAddr,
     ) {
         let id = conn_tx.id();
         while let Ok(event) = dispatcher_rx.recv().await {
-            let OutboundMessage { event, target } = event;
-            if !target.is_recipient(&addr) {
+            /*if !target.is_recipient(&addr) {
                 continue;
-            }
+            }*/
 
             let Ok(data) = Self::serialize_event(event) else {
                 warn!("wasn't able to serialize event");
