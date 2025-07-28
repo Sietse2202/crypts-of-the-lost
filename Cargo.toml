@@ -6,7 +6,8 @@ members = [
     "crates/server",
     "crates/network",
     "crates/protocol",
-    "xtask"
+    "xtask",
+    "crates/debug-client"
 ]
 resolver = "2"
 
