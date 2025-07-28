@@ -18,7 +18,7 @@ handler.path = "crates/network/handler"
 dispatcher.path = "crates/network/dispatcher"
 config.path = "crates/config"
 
-clap = { version = "4.5.41", features = ["derive"], default-features = false }
+clap = { version = "4.5.41", features = ["derive", "std"], default-features = false }
 
 thiserror = "2.0.12"
 tracing = "0.1.41"
