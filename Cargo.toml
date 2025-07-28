@@ -18,7 +18,7 @@ handler.path = "crates/network/handler"
 dispatcher.path = "crates/network/dispatcher"
 config.path = "crates/config"
 
-clap = { version = "4.5.41", features = ["derive", "std"], default-features = false }
+clap = { version = "4.5.41", features = ["derive"] }
 
 thiserror = "2.0.12"
 tracing = "0.1.41"
@@ -41,7 +41,7 @@ unreachable_patterns = "warn"
 [workspace.lints.clippy]
 unwrap_used = { level = "deny", priority = 1 }
 expect_used = { level = "deny", priority = 1 }
-allow_attributes = { level = "forbid", priority = 1 }
+allow_attributes = { level = "deny", priority = 1 }
 correctness = "deny"
 nursery = "deny"
 suspicious = "deny"
