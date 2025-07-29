@@ -3,11 +3,11 @@
 
 use super::NetworkHandler;
 use bincode::error::EncodeError;
-use protocol::event::Event;
+use protocol::event::EventType;
 
 impl NetworkHandler {
     /// Serializes the `Event` struct to a `Vec<u8>`
-    pub(super) fn serialize_event(event: Event) -> Result<Vec<u8>, EncodeError> {
+    pub(super) fn serialize_event(event: EventType) -> Result<Vec<u8>, EncodeError> {
         bincode::encode_to_vec(event, bincode::config::standard())
     }
 }
