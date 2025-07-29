@@ -3,11 +3,12 @@
 
 [workspace]
 members = [
-    "crates/server",
-    "crates/network",
-    "crates/protocol",
-    "xtask",
-    "crates/debug-client"
+  "crates/server",
+  "crates/network",
+  "crates/protocol",
+  "xtask",
+  "crates/debug-client",
+  "crates/mods",
 ]
 resolver = "2"
 
@@ -18,7 +19,8 @@ clap = { version = "4.5.41", features = ["derive"] }
 thiserror = "2.0.12"
 tracing = "0.1.41"
 bincode = "2.0.1"
-tokio = { version = "1.46.1", features = ["macros"] }
+tokio = { version = "1.47.0", features = ["macros"] }
+bevy = { version = "0.16.1", default-features = false }
 
 [workspace.lints.rust]
 unsafe_code = "deny"
@@ -43,3 +45,4 @@ dbg_macro = { level = "warn", priority = 1 }
 todo = { level = "warn", priority = 1 }
 unimplemented = { level = "warn", priority = 1 }
 print_stdout = { level = "warn", priority = 1 }
+multiple_crate_versions = { level = "allow", priority = 1 }

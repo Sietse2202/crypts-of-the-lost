@@ -8,7 +8,5 @@
 use bincode::{Decode, Encode};
 
 /// New player joined. Gets sent to everyone except the new player
-#[derive(
-    Encode, Decode, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash,
-)]
-pub struct PlayerJoined { }
+#[derive(Encode, Decode, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
+pub struct PlayerJoined {}

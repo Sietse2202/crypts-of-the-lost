@@ -9,4 +9,4 @@
 #[derive(
     bincode::Encode, bincode::Decode, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash,
 )]
-pub struct JoinAccept { }
+pub struct JoinAccept {}
