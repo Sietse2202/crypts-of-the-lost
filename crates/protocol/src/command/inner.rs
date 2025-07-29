@@ -2,7 +2,8 @@
 // Copyright (C) 2025 Crypts of the Lost Team
 
 //! # `CommandInner`
-//! For information about the protocol please go to the following [url](https://Sietse2202.github.io/crypts-of-the-lost/).
+//! For information about the protocol please go to the following
+//! [url](https://Sietse2202.github.io/crypts-of-the-lost/).
 
 /// Additional metadata which every command needs
 #[derive(
