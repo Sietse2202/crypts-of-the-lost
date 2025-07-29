@@ -7,7 +7,7 @@
 //!
 //! [`Plugin`]: Plugin
 
-mod toml;
+pub(crate) mod toml;
 
 use bevy::app::App;
 use bevy::prelude::Plugin;
