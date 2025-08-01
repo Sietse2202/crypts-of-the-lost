@@ -22,7 +22,8 @@ impl NetworkHandler {
             return;
         };
 
-        let inbound = tokio::spawn(async move { Self::process_inbound(handler_tx, rx).await });
+        let inbound =
+            tokio::spawn(async move { Self::process_inbound(handler_tx, rx, addr).await });
 
         let outbound = tokio::spawn(async move { Self::process_outbound(handler_rx, tx).await });
 

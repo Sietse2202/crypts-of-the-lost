@@ -4,6 +4,10 @@
 //! # Join
 //! For information about the protocol please go to the following [url](https://Sietse2202.github.io/crypts-of-the-lost/).
 
+#![expect(missing_docs)]
+
+use std::net::SocketAddr;
+
 use crate::command::CommandInner;
 use bevy::ecs::event::Event;
 
@@ -22,5 +26,8 @@ use bevy::ecs::event::Event;
     Event,
 )]
 pub struct Join {
-    inner: CommandInner,
+    pub uuid: u64,
+    pub hash: u64,
+    pub ip: Option<SocketAddr>, // needed for the network handler
+    pub inner: CommandInner,
 }
