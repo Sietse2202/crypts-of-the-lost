@@ -25,7 +25,8 @@ impl NetworkHandler {
         let inbound =
             tokio::spawn(async move { Self::process_inbound(handler_tx, rx, addr).await });
 
-        let outbound = tokio::spawn(async move { Self::process_outbound(handler_rx, tx).await });
+        let outbound =
+            tokio::spawn(async move { Self::process_outbound(handler_rx, tx, addr).await });
 
         let result = tokio::select! {
             _ = inbound => "inbound",

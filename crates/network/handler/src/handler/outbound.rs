@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025 Crypts of the Lost Team
 
+use std::net::SocketAddr;
+
 use super::NetworkHandler;
-use protocol::event::Event;
+use protocol::event::{Event, EventKind};
 use tokio::sync::broadcast::Receiver;
 use tracing::{error, warn};
 
@@ -10,14 +12,22 @@ impl NetworkHandler {
     pub(super) async fn process_outbound(
         mut dispatcher_rx: Receiver<Event>,
         mut conn_tx: quinn::SendStream,
+        addr: SocketAddr,
     ) {
         let id = conn_tx.id();
+        let mut uuid = 0;
         while let Ok(event) = dispatcher_rx.recv().await {
-            /*if !target.is_recipient(&addr) {
+            if let EventKind::JoinAccept(join_accept) = &event.event {
+                if join_accept.ip == addr {
+                    continue;
+                }
+                uuid = join_accept.uuid;
+            }
+            if !event.target.is_recipient(&uuid) {
                 continue;
-            }*/
+            }
 
-            let Ok(data) = Self::serialize_event(event) else {
+            let Ok(data) = Self::serialize_event(event.event) else {
                 warn!("wasn't able to serialize event");
                 continue;
             };
