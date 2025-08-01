@@ -9,13 +9,31 @@ mod inner;
 pub mod join_accept;
 pub mod player_joined;
 
+use crate::target::Target;
 use bincode::{Decode, Encode};
 pub use inner::EventInner;
+
+/// Type used inside the server to specify the targets
+#[derive(Debug, Eq, PartialEq, Clone)]
+pub struct Event {
+    /// Targets the event is sent to
+    pub target: Target,
+    /// The actual event
+    pub event: EventKind,
+}
+
+impl Event {
+    /// Creates a new `Event` struct
+    #[must_use]
+    pub const fn new(event: EventKind, target: Target) -> Self {
+        Self { target, event }
+    }
+}
 
 /// Message from the server, to the client
 #[derive(Encode, Decode, Debug, Eq, PartialEq, Clone)]
 #[non_exhaustive]
-pub enum Event {
+pub enum EventKind {
     /// Gets send when a new player joins
     JoinAccept(join_accept::JoinAccept),
     /// A new player joined
