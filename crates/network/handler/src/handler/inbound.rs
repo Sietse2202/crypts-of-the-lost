@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025 Crypts of the Lost Team
 
+use std::net::SocketAddr;
+
 use super::NetworkHandler;
 use protocol::command::Command;
 use quinn::{ReadExactError, RecvStream};
@@ -13,18 +15,25 @@ impl NetworkHandler {
     pub(super) async fn process_inbound(
         dispatcher_tx: UnboundedSender<Command>,
         mut conn_rx: RecvStream,
+        addr: SocketAddr,
     ) {
         let id = conn_rx.id();
         while let Some(data) = Self::receive_command(&mut conn_rx).await {
             let Ok(data) = data else {
                 continue;
             };
-            let Ok(cmd) = Self::deserialize_command(&data) else {
+            let Ok(mut cmd) = Self::deserialize_command(&data) else {
                 warn!(
                     "[Stream {id}] wasn't able to deserialize following data to `Command`: {data:?}"
                 );
                 continue;
             };
+
+            if let Command::Join(mut join) = cmd {
+                join.ip = Some(addr);
+                cmd = Command::Join(join);
+            }
+
             if let Err(e) = dispatcher_tx.send(cmd) {
                 warn!("[Stream {id}] failed to send data to dispatcher: {e}");
             }
