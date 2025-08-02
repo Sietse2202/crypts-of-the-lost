@@ -68,7 +68,10 @@ impl Plugin for ModdingPlugin {
     }
 }
 
-fn check_dependencies<'a, 'b, 'c>(mod_data: &'a ModData, mods: impl Iterator<Item = &'b ModData>) -> Result<(), &'c str> {
+fn check_dependencies<'a, 'b, 'c>(
+    mod_data: &'a ModData,
+    mods: impl Iterator<Item = &'b ModData>,
+) -> Result<(), &'c str> {
     if let Some(deps) = &mod_data.toml_data.dependencies {
         for (name, data) in deps {
             if data.optional {
@@ -76,8 +79,7 @@ fn check_dependencies<'a, 'b, 'c>(mod_data: &'a ModData, mods: impl Iterator<Ite
             }
 
             if !mods.iter().any(|m| {
-                m.toml_data.data.name.as_str() == name
-                    && m.toml_data.data.version == data.version
+                m.toml_data.data.name.as_str() == name && m.toml_data.data.version == data.version
             }) {
                 return Err(&format!(
                     "Mod `{}` depends on mod `{}`, but it is not loaded",
