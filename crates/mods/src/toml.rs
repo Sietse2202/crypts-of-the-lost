@@ -2,6 +2,8 @@
 // Copyright (C) 2025 Crypts of the Lost Team
 
 use std::collections::HashMap;
+use std::path::Path;
+use tracing::warn;
 
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone, Default, PartialEq, Eq)]
 #[serde(rename_all = "kebab-case")]
@@ -53,6 +55,36 @@ pub struct DependencyData {
     pub version: String,
     pub optional: bool,
     pub checksum: String,
+}
+
+pub fn get_mods() -> Result<Vec<ModToml>, Box<dyn std::error::Error>> {
+    let mut mods = Vec::new();
+
+    for entry in std::fs::read_dir(crate::MOD_DIR)? {
+        let entry = entry?;
+
+        if !entry.path().is_dir() {
+            continue;
+        }
+
+        let toml_path = entry.path().join(crate::MOD_CONFIG_FILE);
+
+        if !toml_path.exists() {
+            warn!(
+                "`{}` does not contain a {} file",
+                Path::new(crate::MOD_DIR).join(entry.path()).display(),
+                crate::MOD_CONFIG_FILE
+            );
+            continue;
+        }
+
+        let toml_str = std::fs::read_to_string(toml_path)?;
+        let toml: ModToml = toml::from_str(&toml_str)?;
+
+        mods.push(toml);
+    }
+
+    Ok(mods)
 }
 
 #[cfg(test)]

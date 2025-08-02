@@ -958,6 +958,7 @@ dependencies = [
  "rhai",
  "serde",
  "toml",
+ "tracing",
 ]
 
 [[package]]
