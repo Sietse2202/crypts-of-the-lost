@@ -8,9 +8,12 @@
 //! [`Plugin`]: Plugin
 
 pub(crate) mod toml;
+pub(crate) mod rhai;
 
 use bevy::app::App;
 use bevy::prelude::Plugin;
+use tracing::error;
+use crate::toml::get_mods;
 
 /// The mod directory in relation to the server root folder
 pub const MOD_DIR: &str = "mods";
