@@ -7,11 +7,13 @@
 //!
 //! [`Plugin`]: Plugin
 
+pub(crate) mod data_driven;
 pub(crate) mod rhai;
 pub(crate) mod toml;
 
+use crate::rhai::{MAX_SCRIPT_OPS, SCRIPT_WARN_OPS};
 use crate::toml::{ModData, get_mods};
-use ::rhai::{Engine, ImmutableString};
+use ::rhai::{Dynamic, Engine, ImmutableString};
 use bevy::app::App;
 use bevy::prelude::Plugin;
 use std::sync::Arc;
@@ -64,19 +66,36 @@ fn run_mod(_app: &App, mod_data: &ModData) -> Result<(), Box<dyn std::error::Err
 
     let name: Arc<str> = Arc::from(mod_data.toml_data.data.name.as_str());
 
+    engine.disable_symbol("eval");
+    engine.disable_symbol("print");
+
+    let name_clone = Arc::clone(&name);
+    engine.on_progress(move |count| {
+        if count % SCRIPT_WARN_OPS == 0 {
+            warn!("Mod `{}`: {}%", name_clone, count);
+        }
+
+        if count >= MAX_SCRIPT_OPS {
+            error!("Mod `{}`: Script execution limit reached", name_clone);
+            return Some(Dynamic::UNIT);
+        }
+
+        None
+    });
+
     let name_clone = Arc::clone(&name);
     engine.register_fn("info", move |msg: ImmutableString| {
-        info!("Mod \"{}\": {msg}", name_clone);
+        info!("Mod `{}`: {msg}", name_clone);
     });
 
     let name_clone = Arc::clone(&name);
     engine.register_fn("warn", move |msg: ImmutableString| {
-        warn!("Mod \"{}\": {msg}", name_clone);
+        warn!("Mod `{}`: {msg}", name_clone);
     });
 
     let name_clone = Arc::clone(&name);
     engine.register_fn("error", move |msg: ImmutableString| {
-        error!("Mod \"{}\": {msg}", name_clone);
+        error!("Mod `{}`: {msg}", name_clone);
     });
 
     engine.run_with_scope(&mut rhai::scope::get_default_scope(), "")?;
