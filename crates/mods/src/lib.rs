@@ -35,5 +35,17 @@ pub const MOD_CONFIG_FILE: &str = "mod.toml";
 pub struct ModdingPlugin;
 
 impl Plugin for ModdingPlugin {
-    fn build(&self, _app: &mut App) {}
+    #[expect(clippy::unwrap_used, clippy::todo)]
+    fn build(&self, _app: &mut App) {
+        let mods = get_mods();
+        if let Err(e) = mods {
+            error!("Failed to load mods: {}", e);
+            return;
+        }
+
+        // PANIC: if it is Err, we have already returned
+        for _mod in get_mods().unwrap() {
+            todo!()
+        }
+    }
 }
