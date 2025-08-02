@@ -2,6 +2,7 @@
 // Copyright (C) 2025 Crypts of the Lost Team
 
 pub mod scope;
+pub mod engine;
 
 /// Number of ops the engine preforms before forcefully quitting the script.
 pub const MAX_SCRIPT_OPS: u64 = 10_000;
