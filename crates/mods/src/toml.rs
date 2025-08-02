@@ -78,8 +78,11 @@ pub fn get_mods() -> Result<Vec<ModToml>, Box<dyn std::error::Error>> {
             continue;
         }
 
-        let toml_str = std::fs::read_to_string(toml_path)?;
-        let toml: ModToml = toml::from_str(&toml_str)?;
+        let toml_str = std::fs::read_to_string(&toml_path)?;
+        let Ok(toml) = toml::from_str(&toml_str) else {
+            warn!("Failed to parse `{}`", toml_path.display());
+            continue;
+        };
 
         mods.push(toml);
     }
