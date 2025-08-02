@@ -89,7 +89,7 @@ pub fn get_mods() -> Result<Vec<ModData>, Box<dyn std::error::Error>> {
             warn!("Failed to parse `{}`", toml_path.display());
             continue;
         };
-        
+
         let data = ModData {
             toml_data: toml,
             path: entry.path(),

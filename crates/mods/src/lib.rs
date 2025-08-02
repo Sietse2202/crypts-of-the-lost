@@ -7,15 +7,15 @@
 //!
 //! [`Plugin`]: Plugin
 
-pub(crate) mod toml;
 pub(crate) mod rhai;
+pub(crate) mod toml;
 
-use std::sync::Arc;
+use crate::toml::{ModData, get_mods};
+use ::rhai::{Engine, ImmutableString};
 use bevy::app::App;
 use bevy::prelude::Plugin;
+use std::sync::Arc;
 use tracing::{error, info, warn};
-use crate::toml::{get_mods, ModData};
-use ::rhai::{Engine, ImmutableString};
 
 /// The mod directory in relation to the server root folder
 pub const MOD_DIR: &str = "mods";
