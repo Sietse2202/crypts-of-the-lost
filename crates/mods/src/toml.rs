@@ -2,7 +2,7 @@
 // Copyright (C) 2025 Crypts of the Lost Team
 
 use std::collections::HashMap;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use tracing::warn;
 
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone, Default, PartialEq, Eq)]
@@ -57,7 +57,13 @@ pub struct DependencyData {
     pub checksum: String,
 }
 
-pub fn get_mods() -> Result<Vec<ModToml>, Box<dyn std::error::Error>> {
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub struct ModData {
+    pub toml_data: ModToml,
+    pub path: PathBuf,
+}
+
+pub fn get_mods() -> Result<Vec<ModData>, Box<dyn std::error::Error>> {
     let mut mods = Vec::new();
 
     for entry in std::fs::read_dir(crate::MOD_DIR)? {
@@ -83,8 +89,13 @@ pub fn get_mods() -> Result<Vec<ModToml>, Box<dyn std::error::Error>> {
             warn!("Failed to parse `{}`", toml_path.display());
             continue;
         };
+        
+        let data = ModData {
+            toml_data: toml,
+            path: entry.path(),
+        };
 
-        mods.push(toml);
+        mods.push(data);
     }
 
     Ok(mods)
