@@ -53,18 +53,58 @@ impl Plugin for ModdingPlugin {
         // PANIC: if it is Err, we have already returned
         let mods = mods.unwrap();
 
-        for mod_data in &mods {
-            if let Err(e) = run_mod(app, mod_data) {
+        'load_mod: for mod_data in &mods {
+            if let Err(e) = check_dependencies(mod_data, mods.iter()) {
+                error!("{}", e);
+                break 'load_mod;
+            }
+
+            let mut engine = get_default_engine(mod_data.toml_data.data.name.as_str());
+
+            if let Err(e) = run_mod(app, mod_data, &mut engine) {
                 error!("Failed to run mod: {}", e);
             }
         }
     }
 }
 
-fn run_mod(_app: &App, mod_data: &ModData) -> Result<(), Box<dyn std::error::Error>> {
+fn check_dependencies<'a, 'b, 'c>(mod_data: &'a ModData, mods: impl Iterator<Item = &'b ModData>) -> Result<(), &'c str> {
+    if let Some(deps) = &mod_data.toml_data.dependencies {
+        for (name, data) in deps {
+            if data.optional {
+                continue;
+            }
+
+            if !mods.iter().any(|m| {
+                m.toml_data.data.name.as_str() == name
+                    && m.toml_data.data.version == data.version
+            }) {
+                return Err(&format!(
+                    "Mod `{}` depends on mod `{}`, but it is not loaded",
+                    mod_data.toml_data.data.name.as_str(),
+                    name
+                ));
+            }
+        }
+    }
+
+    Ok(())
+}
+
+fn run_mod(
+    _app: &App,
+    _mod_data: &ModData,
+    engine: &mut Engine,
+) -> Result<(), Box<dyn std::error::Error>> {
+    engine.run_with_scope(&mut rhai::scope::get_default_scope(), "")?;
+
+    Ok(())
+}
+
+fn get_default_engine(name: &str) -> Engine {
     let mut engine = Engine::new();
 
-    let name: Arc<str> = Arc::from(mod_data.toml_data.data.name.as_str());
+    let name: Arc<str> = Arc::from(name);
 
     engine.disable_symbol("eval");
     engine.disable_symbol("print");
@@ -99,7 +139,5 @@ fn run_mod(_app: &App, mod_data: &ModData) -> Result<(), Box<dyn std::error::Err
         error!("Mod `{}`: {msg}", name_clone);
     });
 
-    engine.run_with_scope(&mut rhai::scope::get_default_scope(), "")?;
-
-    Ok(())
+    engine
 }
