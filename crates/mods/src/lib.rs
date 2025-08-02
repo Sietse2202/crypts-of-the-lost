@@ -76,8 +76,9 @@ fn run_mod(_app: &App, mod_data: &ModData) -> Result<(), Box<dyn std::error::Err
         }
 
         if count >= MAX_SCRIPT_OPS {
-            error!("Mod `{}`: Script execution limit reached", name_clone);
-            return Some(Dynamic::UNIT);
+            let msg = format!("Script execution limit of {} reached", MAX_SCRIPT_OPS);
+            error!("Mod `{}`: {}", name_clone, &msg);
+            return Some(msg.into());
         }
 
         None
