@@ -9,3 +9,5 @@ pub const MAX_SCRIPT_OPS: u64 = 10_000;
 /// Number of ops the engine preforms before warning,
 /// the warning occurs every `SCRIPT_WARN_OPS` ops.
 pub const SCRIPT_WARN_OPS: u64 = 1_000;
+/// Max memory usage in bytes
+pub const MAX_MEM_USAGE: usize = 10_485_760; // 10MiB
