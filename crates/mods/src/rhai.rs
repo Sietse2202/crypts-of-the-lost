@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025 Crypts of the Lost Team
 
-pub mod scope;
 pub mod engine;
+pub mod scope;
 
 /// Number of ops the engine preforms before forcefully quitting the script.
 pub const MAX_SCRIPT_OPS: u64 = 10_000;

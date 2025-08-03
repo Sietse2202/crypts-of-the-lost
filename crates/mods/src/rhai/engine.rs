@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025 Crypts of the Lost Team
 
-use std::sync::Arc;
-use rhai::{Engine, ImmutableString};
-use tracing::{error, info, warn};
 use crate::rhai::{MAX_SCRIPT_OPS, SCRIPT_WARN_OPS};
+use rhai::{Engine, ImmutableString};
+use std::sync::Arc;
+use tracing::{error, info, warn};
 
 pub fn get_default_engine(name: &str) -> Engine {
     let mut engine = Engine::new();
@@ -21,7 +21,7 @@ pub fn get_default_engine(name: &str) -> Engine {
         }
 
         if count >= MAX_SCRIPT_OPS {
-            let msg = format!("Script execution limit of {} reached", MAX_SCRIPT_OPS);
+            let msg = format!("Script execution limit of {MAX_SCRIPT_OPS} reached");
             error!("Mod `{}`: {}", name_clone, &msg);
             return Some(msg.into());
         }
