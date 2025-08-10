@@ -22,6 +22,7 @@ impl NetworkHandler {
                 }
                 uuid = join_accept.uuid;
             }
+
             if !event.target.is_recipient(&uuid) {
                 continue;
             }
