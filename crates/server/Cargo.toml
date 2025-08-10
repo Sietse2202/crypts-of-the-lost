@@ -15,7 +15,7 @@ categories = ["games"]
 [dependencies]
 clap.workspace = true
 protocol.workspace = true
-dispatcher.workspace = true
+network.workspace = true
 bevy.workspace = true
 config.workspace = true
 

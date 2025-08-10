@@ -607,18 +607,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "dispatcher"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "config",
- "handler",
- "protocol",
- "tokio",
- "tracing",
-]
-
-[[package]]
 name = "disqualified"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -759,21 +747,6 @@ dependencies = [
  "bytemuck",
  "libm",
  "serde",
-]
-
-[[package]]
-name = "handler"
-version = "0.1.0"
-dependencies = [
- "dashmap",
- "protocol",
- "quinn",
- "rmp-serde",
- "rustls-pki-types",
- "serde",
- "thiserror 2.0.12",
- "tokio",
- "tracing",
 ]
 
 [[package]]
@@ -944,6 +917,23 @@ dependencies = [
  "libc",
  "wasi 0.11.1+wasi-snapshot-preview1",
  "windows-sys 0.59.0",
+]
+
+[[package]]
+name = "network"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "config",
+ "dashmap",
+ "protocol",
+ "quinn",
+ "rmp-serde",
+ "rustls-pki-types",
+ "serde",
+ "thiserror 2.0.12",
+ "tokio",
+ "tracing",
 ]
 
 [[package]]
@@ -1445,7 +1435,7 @@ dependencies = [
  "bevy",
  "clap",
  "config",
- "dispatcher",
+ "network",
  "protocol",
 ]
 

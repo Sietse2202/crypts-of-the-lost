@@ -5,8 +5,7 @@
 members = [
     "crates/server",
 
-    "crates/network/handler",
-    "crates/network/dispatcher",
+    "crates/network",
 
     "crates/protocol",
 
@@ -18,8 +17,7 @@ resolver = "3"
 
 [workspace.dependencies]
 protocol.path = "crates/protocol"
-handler.path = "crates/network/handler"
-dispatcher.path = "crates/network/dispatcher"
+network.path = "crates/network"
 config.path = "crates/config"
 
 clap = { version = "4.5.41", features = ["derive"] }

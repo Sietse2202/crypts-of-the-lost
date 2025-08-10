@@ -2,10 +2,10 @@
 # Copyright (C) 2025 Crypts of the Lost Team
 
 [package]
-name = "handler"
+name = "network"
 version = "0.1.0"
 edition = "2024"
-description = "Crypt of the Lost network handler"
+description = "Crypt of the Lost network"
 license-file = "../../LICENSE"
 repository = "https://github.com/Sietse2202/crypts-of-the-lost"
 readme = "../../README.md"
@@ -14,14 +14,17 @@ categories = ["games"]
 
 [dependencies]
 quinn = "0.11.8"
-thiserror.workspace = true
 rustls-pki-types = "1.12.0"
+dashmap = "6.1.0"
+
+thiserror.workspace = true
 tracing.workspace = true
 serde.workspace = true
 rmp-serde.workspace = true
 tokio.workspace = true
 protocol.workspace = true
-dashmap = "6.1.0"
+bevy.workspace = true
+config.workspace = true
 
 [lints]
 workspace = true
