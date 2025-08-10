@@ -13,9 +13,11 @@ use bevy::{
 };
 
 mod command_receiver;
+mod event_sender;
 
 use command_receiver::{CommandReceiver, process_incoming_commands};
 use config::Config;
+use event_sender::{EventSender, process_outbound_events};
 use handler::{Certs, NetworkHandler};
 use protocol::{command::CommandKind, event::EventKind};
 use tracing::info;
@@ -28,7 +30,8 @@ pub struct Network;
 impl Plugin for Network {
     fn build(&self, app: &mut bevy::app::App) {
         app.add_systems(Startup, setup)
-            .add_systems(Update, process_incoming_commands);
+            .add_systems(Update, process_incoming_commands)
+            .add_systems(Update, process_outbound_events);
     }
 }
 
@@ -56,4 +59,5 @@ fn setup(mut commands: Commands, config: Res<Config>) {
     );
 
     commands.insert_resource(CommandReceiver { rx: inbound_rx });
+    commands.insert_resource(EventSender { tx: outbound_tx });
 }
