@@ -5,36 +5,27 @@
 //! This module contains all types used for the communication from the server
 //! to the client.
 
-mod inner;
-pub mod join_accept;
-pub mod player_joined;
+mod join_accept;
+mod player_joined;
 
-use crate::target::Target;
-pub use inner::EventInner;
+pub use join_accept::JoinAccept;
+pub use player_joined::PlayerJoined;
 
-/// Type used inside the server to specify the targets
-#[derive(Debug, Eq, PartialEq, Clone)]
-pub struct Event {
-    /// Targets the event is sent to
-    pub target: Target,
-    /// The actual event
-    pub event: EventKind,
-}
-
-impl Event {
-    /// Creates a new `Event` struct
-    #[must_use]
-    pub const fn new(event: EventKind, target: Target) -> Self {
-        Self { target, event }
-    }
-}
+use crate::Targetable;
 
 /// Message from the server, to the client
-#[derive(serde::Deserialize, serde::Serialize, Debug, Eq, PartialEq, Clone)]
+#[derive(
+    serde::Deserialize, serde::Serialize, Debug, Eq, PartialEq, Clone, derive_more::with_trait::From,
+)]
+#[enum_dispatch::enum_dispatch]
 #[non_exhaustive]
 pub enum EventKind {
     /// Gets send when a new player joins
-    JoinAccept(join_accept::JoinAccept),
+    JoinAccept(JoinAccept),
     /// A new player joined
-    PlayerJoined(player_joined::PlayerJoined),
+    PlayerJoined(PlayerJoined),
 }
+
+/// Each event needs to have this trait
+#[enum_dispatch::enum_dispatch(EventKind)]
+pub trait Event: Targetable {}

@@ -3,7 +3,7 @@
 
 use super::NetworkHandler;
 use dashmap::DashMap;
-use protocol::{command::Command, event::Event};
+use protocol::{command::CommandKind, event::EventKind};
 use quinn::Connection;
 use std::{net::SocketAddr, sync::Arc};
 use tokio::sync::{broadcast::Receiver, mpsc::UnboundedSender};
@@ -13,8 +13,8 @@ impl NetworkHandler {
     pub(super) async fn handle_connection(
         connection: Connection,
         connections: Arc<DashMap<SocketAddr, Connection>>,
-        handler_tx: UnboundedSender<Command>,
-        handler_rx: Receiver<Event>,
+        handler_tx: UnboundedSender<CommandKind>,
+        handler_rx: Receiver<EventKind>,
     ) {
         let addr = connection.remote_address();
         let Ok((tx, rx)) = connection.open_bi().await else {

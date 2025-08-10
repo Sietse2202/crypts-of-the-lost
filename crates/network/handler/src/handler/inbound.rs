@@ -4,7 +4,7 @@
 use std::net::SocketAddr;
 
 use super::NetworkHandler;
-use protocol::command::Command;
+use protocol::command::CommandKind;
 use quinn::{ReadExactError, RecvStream};
 use tokio::sync::mpsc::UnboundedSender;
 use tracing::{error, warn};
@@ -13,7 +13,7 @@ type RecvResult = Option<Result<Vec<u8>, ReadExactError>>;
 
 impl NetworkHandler {
     pub(super) async fn process_inbound(
-        dispatcher_tx: UnboundedSender<Command>,
+        dispatcher_tx: UnboundedSender<CommandKind>,
         mut conn_rx: RecvStream,
         addr: SocketAddr,
     ) {
@@ -29,9 +29,9 @@ impl NetworkHandler {
                 continue;
             };
 
-            if let Command::Join(mut join) = cmd {
+            if let CommandKind::Join(mut join) = cmd {
                 join.ip = Some(addr);
-                cmd = Command::Join(join);
+                cmd = CommandKind::Join(join);
             }
 
             if let Err(e) = dispatcher_tx.send(cmd) {

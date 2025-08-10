@@ -6,15 +6,20 @@
 
 #![expect(missing_docs)]
 
-use std::net::SocketAddr;
-
-use crate::event::EventInner;
 use bevy::ecs::event::Event;
+use std::net::SocketAddr;
 
 /// Event from the server to the client whose join command got accepted
 #[derive(serde::Deserialize, serde::Serialize, Debug, Eq, PartialEq, Clone, Event)]
 pub struct JoinAccept {
     pub ip: SocketAddr,
     pub uuid: u64,
-    pub inner: EventInner,
+}
+
+impl crate::event::Event for JoinAccept {}
+
+impl crate::target::Targetable for JoinAccept {
+    fn get_target(&self) -> &crate::target::Target {
+        &crate::target::Target::Everyone
+    }
 }
