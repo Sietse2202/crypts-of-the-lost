@@ -4,10 +4,14 @@
 [workspace]
 members = [
     "crates/server",
+
     "crates/network/handler",
-    "crates/protocol",
     "crates/network/dispatcher",
+
+    "crates/protocol",
+
     "crates/config",
+
     "xtask",
 ]
 resolver = "3"
