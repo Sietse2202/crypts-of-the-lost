@@ -27,6 +27,10 @@ impl Target {
     /// Checks if the provided id is a valid target
     #[must_use]
     pub fn is_recipient(&self, other: &u64) -> bool {
+        if *other == 0 {
+            return false;
+        }
+
         match self {
             Self::Everyone => true,
             Self::EveryoneExceptGroup(ids) => !ids.contains(other),
