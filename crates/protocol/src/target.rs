@@ -45,7 +45,7 @@ impl Target {
 #[enum_dispatch::enum_dispatch(EventKind)]
 pub trait Targetable {
     /// Returns the [`Target`] associated with this type
-    fn get_target(&self) -> &Target;
+    fn get_target(&self) -> Target;
 
     /// Returns whether the given id is a recipient according to the [`Target`].
     fn is_recipient(&self, other: &u64) -> bool {
