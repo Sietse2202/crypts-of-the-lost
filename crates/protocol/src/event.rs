@@ -14,7 +14,9 @@ pub use player_joined::PlayerJoined;
 use crate::Targetable;
 
 /// Message from the server, to the client
-#[derive(serde::Deserialize, serde::Serialize, Debug, Eq, PartialEq, Clone)]
+#[derive(
+    serde::Deserialize, serde::Serialize, Debug, Eq, PartialEq, Clone, derive_more::TryFrom,
+)]
 #[enum_dispatch::enum_dispatch]
 #[non_exhaustive]
 pub enum EventKind {
