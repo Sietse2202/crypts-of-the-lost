@@ -17,7 +17,7 @@ mod command_receiver;
 use command_receiver::{CommandReceiver, process_incoming_commands};
 use config::Config;
 use handler::{Certs, NetworkHandler};
-use protocol::{command::Command, event::Event};
+use protocol::{command::CommandKind, event::EventKind};
 use tracing::info;
 
 /// Network plugin which starts the `NetworkHandler` and
@@ -38,8 +38,8 @@ impl Plugin for Network {
 fn setup(mut commands: Commands, config: Res<Config>) {
     info!("Setting up network");
 
-    let (inbound_tx, inbound_rx) = tokio::sync::mpsc::unbounded_channel::<Command>();
-    let (outbound_tx, outbound_rx) = tokio::sync::mpsc::unbounded_channel::<Event>();
+    let (inbound_tx, inbound_rx) = tokio::sync::mpsc::unbounded_channel::<CommandKind>();
+    let (outbound_tx, outbound_rx) = tokio::sync::mpsc::unbounded_channel::<EventKind>();
 
     let certs = Certs::read_from_file(&config.network.certs, &config.network.key)
         .expect("A TLS certificate and private key (self- or externally-signed) are required to start a server.");

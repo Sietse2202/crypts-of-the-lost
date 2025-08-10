@@ -5,19 +5,19 @@
 //! Stores the rx from the networkhandler
 
 use bevy::ecs::{event::EventWriter, resource::Resource, system::ResMut};
-use protocol::command::{Command, join::Join};
+use protocol::command::{CommandKind, join::Join};
 use tokio::sync::mpsc::UnboundedReceiver;
 
 #[derive(Debug, Resource)]
 pub struct CommandReceiver {
-    pub rx: UnboundedReceiver<Command>,
+    pub rx: UnboundedReceiver<CommandKind>,
 }
 
-pub fn process_incoming_commands(mut join: EventWriter<Join>, mut recv: ResMut<CommandReceiver>) {
+pub fn process_incoming_commands(mut recv: ResMut<CommandReceiver>, mut join: EventWriter<Join>) {
     while let Ok(cmd) = recv.rx.try_recv() {
         #[expect(clippy::single_match)]
         match cmd {
-            Command::Join(data) => {
+            CommandKind::Join(data) => {
                 join.write(data);
             }
             _ => {}

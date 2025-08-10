@@ -16,7 +16,6 @@ categories = ["games"]
 serde.workspace = true
 bevy.workspace = true
 enum_dispatch = "0.3.13"
-derive_more = "2.0.1"
 
 [lints]
 workspace = true

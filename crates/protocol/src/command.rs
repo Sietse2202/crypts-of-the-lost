@@ -11,6 +11,7 @@ pub mod join;
 #[derive(
     serde::Deserialize, serde::Serialize, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash,
 )]
+#[enum_dispatch::enum_dispatch]
 #[non_exhaustive]
 pub enum CommandKind {
     /// New connection
@@ -18,4 +19,5 @@ pub enum CommandKind {
 }
 
 /// Trait to be implemented by each command
+#[enum_dispatch::enum_dispatch(CommandKind)]
 pub trait Command {}
