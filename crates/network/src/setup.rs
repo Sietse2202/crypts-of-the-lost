@@ -1,44 +1,23 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025 Crypts of the Lost Team
 
-//! # Dispatcher
-//! This crate handles all networking code between the client and the server, this also
-//! specifies the protocol they use to communicate.
+//! # Setup
+//! This module handles setting up the `NetworkHandler` and start listening
+//! new connections.
 
-#![expect(clippy::multiple_crate_versions)]
-
-use bevy::{
-    app::{Plugin, Startup, Update},
-    ecs::system::{Commands, Res},
+use crate::{
+    Certs, NetworkHandler,
+    bridge::{CommandReceiver, EventSender},
 };
-
-mod command_receiver;
-mod event_sender;
-
-use command_receiver::{CommandReceiver, process_incoming_commands};
+use bevy::ecs::system::{Commands, Res};
 use config::Config;
-use event_sender::{EventSender, process_outbound_events};
-use handler::{Certs, NetworkHandler};
 use protocol::{command::CommandKind, event::EventKind};
 use tracing::info;
-
-/// Network plugin which starts the `NetworkHandler` and
-/// the dispatchers.
-#[derive(Debug)]
-pub struct Network;
-
-impl Plugin for Network {
-    fn build(&self, app: &mut bevy::app::App) {
-        app.add_systems(Startup, setup)
-            .add_systems(Update, process_incoming_commands)
-            .add_systems(Update, process_outbound_events);
-    }
-}
 
 #[expect(unused)]
 #[expect(clippy::expect_used)]
 #[expect(clippy::needless_pass_by_value)]
-fn setup(mut commands: Commands, config: Res<Config>) {
+pub fn setup(mut commands: Commands, config: Res<Config>) {
     info!("Setting up network");
 
     let (inbound_tx, inbound_rx) = tokio::sync::mpsc::unbounded_channel::<CommandKind>();

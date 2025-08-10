@@ -11,7 +11,7 @@
 
 use bevy::prelude::*;
 use config::parse_config;
-use dispatcher::Network;
+use network::Network;
 use protocol::Protocol;
 use std::time::Duration;
 
