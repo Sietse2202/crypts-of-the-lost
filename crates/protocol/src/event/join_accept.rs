@@ -12,7 +12,7 @@ use crate::event::EventInner;
 use bevy::ecs::event::Event;
 
 /// Event from the server to the client whose join command got accepted
-#[derive(bincode::Encode, bincode::Decode, Debug, Eq, PartialEq, Clone, Event)]
+#[derive(serde::Deserialize, serde::Serialize, Debug, Eq, PartialEq, Clone, Event)]
 pub struct JoinAccept {
     pub ip: SocketAddr,
     pub uuid: u64,

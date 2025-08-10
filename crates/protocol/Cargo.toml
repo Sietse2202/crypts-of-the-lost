@@ -13,7 +13,7 @@ keywords = ["network", "protocol"]
 categories = ["games"]
 
 [dependencies]
-bincode.workspace = true
+serde.workspace = true
 bevy.workspace = true
 
 [lints]

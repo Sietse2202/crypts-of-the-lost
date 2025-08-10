@@ -6,6 +6,6 @@
 
 /// Additional metadata which every command needs
 #[derive(
-    bincode::Encode, bincode::Decode, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash,
+    serde::Deserialize, serde::Serialize, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash,
 )]
 pub struct CommandInner {}

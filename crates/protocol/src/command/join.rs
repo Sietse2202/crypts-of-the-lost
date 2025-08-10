@@ -13,8 +13,8 @@ use bevy::ecs::event::Event;
 
 /// The command sent to the server after successful connection to it.
 #[derive(
-    bincode::Encode,
-    bincode::Decode,
+    serde::Deserialize,
+    serde::Serialize,
     Debug,
     Ord,
     PartialOrd,

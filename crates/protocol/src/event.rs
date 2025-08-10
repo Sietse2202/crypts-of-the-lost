@@ -10,7 +10,6 @@ pub mod join_accept;
 pub mod player_joined;
 
 use crate::target::Target;
-use bincode::{Decode, Encode};
 pub use inner::EventInner;
 
 /// Type used inside the server to specify the targets
@@ -31,7 +30,7 @@ impl Event {
 }
 
 /// Message from the server, to the client
-#[derive(Encode, Decode, Debug, Eq, PartialEq, Clone)]
+#[derive(serde::Deserialize, serde::Serialize, Debug, Eq, PartialEq, Clone)]
 #[non_exhaustive]
 pub enum EventKind {
     /// Gets send when a new player joins
