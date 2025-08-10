@@ -13,7 +13,7 @@ pub struct PlayerJoined {}
 impl crate::Event for PlayerJoined {}
 
 impl crate::Targetable for PlayerJoined {
-    fn get_target(&self) -> &crate::Target {
-        &crate::Target::Everyone
+    fn get_target(&self) -> crate::Target {
+        crate::Target::Everyone
     }
 }

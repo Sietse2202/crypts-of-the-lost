@@ -19,7 +19,7 @@ pub struct JoinAccept {
 impl crate::event::Event for JoinAccept {}
 
 impl crate::target::Targetable for JoinAccept {
-    fn get_target(&self) -> &crate::target::Target {
-        &crate::target::Target::Everyone
+    fn get_target(&self) -> crate::target::Target {
+        crate::target::Target::Player(self.uuid)
     }
 }
