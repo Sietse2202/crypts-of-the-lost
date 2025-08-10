@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="175.20621mm"
+   height="39.066257mm"
+   viewBox="0 0 175.20621 39.066257"
+   version="1.1"
+   id="svg1"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <linearGradient
+       id="linearGradient4">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0;"
+         offset="0"
+         id="stop4" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop5" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient2">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop2" />
+      <stop
+         style="stop-color:#b1b1b1;stop-opacity:1;"
+         offset="0.74223602"
+         id="stop6" />
+      <stop
+         style="stop-color:#9c9c9c;stop-opacity:0.15909091;"
+         offset="0.79813665"
+         id="stop3" />
+    </linearGradient>
+    <linearGradient
+       xlink:href="#linearGradient4"
+       id="linearGradient5"
+       x1="14.589508"
+       y1="14.427521"
+       x2="160.6167"
+       y2="24.638737"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       xlink:href="#linearGradient2"
+       id="linearGradient6"
+       gradientUnits="userSpaceOnUse"
+       x1="14.411217"
+       y1="19.533129"
+       x2="160.795"
+       y2="19.533129" />
+  </defs>
+  <g
+     id="layer1">
+    <rect
+       style="opacity:1;fill:#333333;fill-opacity:0;stroke-width:0.843;stroke-linecap:square;stroke-miterlimit:4.6"
+       id="rect1"
+       width="175.20622"
+       height="39.066257"
+       x="0"
+       y="-5.6843419e-14" />
+    <text
+       xml:space="preserve"
+       style="font-weight:bold;font-size:13.6936px;font-family:'Hack Nerd Font';-inkscape-font-specification:'Hack Nerd Font Bold';text-align:start;writing-mode:lr-tb;direction:ltr;text-orientation:upright;text-anchor:start;fill:url(#linearGradient6);stroke:url(#linearGradient5);stroke-width:2.3373;stroke-linecap:square;stroke-miterlimit:4.6"
+       x="13.468445"
+       y="23.310904"
+       id="text1"><tspan
+         id="tspan1"
+         style="fill:url(#linearGradient6);fill-opacity:1;stroke:url(#linearGradient5);stroke-width:2.3373"
+         x="13.468445"
+         y="23.310904">Crypts of the Lost</tspan></text>
+    <path
+       style="fill:#008000;stroke-width:0.843;stroke-linecap:square;stroke-miterlimit:4.6"
+       d="m 81.802368,20.59857 c 0.157843,0.03946 0.315688,0.07892 0,0 z"
+       id="path2" />
+  </g>
+</svg>

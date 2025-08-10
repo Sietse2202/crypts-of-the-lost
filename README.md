@@ -1,4 +1,4 @@
-# Crypts of the Lost
+![logo](LOGO.svg)
 An MMO Dungeon Crawler Roguelite inspired by [Hypixel Skyblock](https://hypixel.net/categories/skyblock.194/) Dungeons
 
 ## Quirks
