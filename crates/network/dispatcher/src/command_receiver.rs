@@ -13,14 +13,23 @@ pub struct CommandReceiver {
     pub rx: UnboundedReceiver<CommandKind>,
 }
 
-pub fn process_incoming_commands(mut recv: ResMut<CommandReceiver>, mut join: EventWriter<Join>) {
-    while let Ok(cmd) = recv.rx.try_recv() {
-        #[expect(clippy::single_match)]
-        match cmd {
-            CommandKind::Join(data) => {
-                join.write(data);
-            }
+macro_rules! handle_commands {
+    ($cmd:expr, { $($variant:ident => $writer:ident),* $(,)? }) => {
+        match $cmd {
+            $(
+                CommandKind::$variant(data) => {
+                    $writer.write(data);
+                }
+            )*
             _ => {}
         }
+    };
+}
+
+pub fn process_incoming_commands(mut recv: ResMut<CommandReceiver>, mut join: EventWriter<Join>) {
+    while let Ok(cmd) = recv.rx.try_recv() {
+        handle_commands!(cmd, {
+            Join => join
+        });
     }
 }
