@@ -30,12 +30,16 @@ pub fn setup(mut commands: Commands, config: Res<Config>) {
         .create_server_config()
         .expect("Wasn't able to create the ServerConfig");
 
-    let handler = NetworkHandler::new(
+    let mut handler = NetworkHandler::new(
         config.network.socket,
         server_config,
         outbound_rx,
         inbound_tx,
     );
+
+    tokio::spawn(async move {
+        handler.start().await;
+    });
 
     commands.insert_resource(CommandReceiver { rx: inbound_rx });
     commands.insert_resource(EventSender { tx: outbound_tx });
