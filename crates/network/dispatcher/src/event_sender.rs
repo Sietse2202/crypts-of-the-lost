@@ -15,7 +15,9 @@ pub struct EventSender {
 
 macro_rules! send_all_events {
     ($sender:expr, $($reader:expr),+ $(,)?) => {
-        $(send_events($sender, $reader);)+
+        $(
+            send_events($sender, $reader);
+        )+
     };
 }
 
