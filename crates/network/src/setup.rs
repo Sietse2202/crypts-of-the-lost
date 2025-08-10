@@ -12,9 +12,8 @@ use crate::{
 use bevy::ecs::system::{Commands, Res};
 use config::Config;
 use protocol::{command::CommandKind, event::EventKind};
-use tracing::info;
+use tracing::{error, info};
 
-#[expect(unused)]
 #[expect(clippy::expect_used)]
 #[expect(clippy::needless_pass_by_value)]
 pub fn setup(mut commands: Commands, config: Res<Config>) {
@@ -38,7 +37,10 @@ pub fn setup(mut commands: Commands, config: Res<Config>) {
     );
 
     tokio::spawn(async move {
-        handler.start().await;
+        if let Err(e) = handler.start().await {
+            error!("Failed to start network handler: {e}");
+            panic!("Server cannot continue without a network handler")
+        }
     });
 
     commands.insert_resource(CommandReceiver { rx: inbound_rx });

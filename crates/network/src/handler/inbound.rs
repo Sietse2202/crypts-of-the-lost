@@ -40,6 +40,8 @@ impl NetworkHandler {
         }
     }
 
+    const MAX_MESSAGE_SIZE: u32 = 1024 * 1024;
+
     async fn receive_command(stream: &mut quinn::RecvStream) -> RecvResult {
         let mut len_buf = [0u8; 4];
         if let Err(e) = Self::read_exact(stream, &mut len_buf).await {
@@ -47,6 +49,11 @@ impl NetworkHandler {
         }
 
         let len = u32::from_be_bytes(len_buf);
+        if len > Self::MAX_MESSAGE_SIZE {
+            warn!("Message to large: {len} bytes");
+            return None;
+        }
+
         let mut data = vec![0u8; len as usize];
         if let Err(e) = Self::read_exact(stream, &mut data).await {
             return e;

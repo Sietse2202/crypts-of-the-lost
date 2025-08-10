@@ -26,10 +26,16 @@ macro_rules! handle_commands {
     };
 }
 
+const MAX_PER_FRAME: u32 = 100;
+
 pub fn process_incoming_commands(mut recv: ResMut<CommandReceiver>, mut join: EventWriter<Join>) {
-    while let Ok(cmd) = recv.rx.try_recv() {
+    let mut processed = 0;
+
+    while processed < MAX_PER_FRAME {
+        let Ok(cmd) = recv.rx.try_recv() else { break };
         handle_commands!(cmd, {
             Join => join
         });
+        processed += 1;
     }
 }
