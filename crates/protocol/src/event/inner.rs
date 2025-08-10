@@ -7,7 +7,7 @@
 use crate::target::Target;
 
 /// Additional metadata which every event needs
-#[derive(bincode::Encode, bincode::Decode, Debug, Eq, PartialEq, Clone)]
+#[derive(serde::Deserialize, serde::Serialize, Debug, Eq, PartialEq, Clone)]
 pub struct EventInner {
     target: Target,
 }

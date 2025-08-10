@@ -8,7 +8,7 @@
 use std::collections::HashSet;
 
 /// The target(s) to send the event to.
-#[derive(bincode::Encode, bincode::Decode, Debug, Eq, PartialEq, Clone)]
+#[derive(serde::Deserialize, serde::Serialize, Debug, Eq, PartialEq, Clone)]
 pub enum Target {
     /// Sends the event to everyone
     All,

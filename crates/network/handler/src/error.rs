@@ -14,10 +14,10 @@ pub enum HandlerError {
     Io(#[from] std::io::Error),
     /// Bincode `DecodeError`
     #[error("DecodeError: {0}")]
-    Decode(#[from] bincode::error::DecodeError),
+    Deserialize(#[from] rmp_serde::decode::Error),
     /// Bincode `EncodeError`,
     #[error("EncodeError: {0}")]
-    Encode(#[from] bincode::error::EncodeError),
+    Encode(#[from] rmp_serde::encode::Error),
     /// `ConnectionError` from quinn
     #[error("ConnectionError: {0}")]
     Connection(#[from] quinn::ConnectionError),

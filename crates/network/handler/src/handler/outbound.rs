@@ -18,7 +18,7 @@ impl NetworkHandler {
         let mut uuid = 0;
         while let Ok(event) = dispatcher_rx.recv().await {
             if let EventKind::JoinAccept(join_accept) = &event.event {
-                if join_accept.ip == addr {
+                if join_accept.ip != addr {
                     continue;
                 }
                 uuid = join_accept.uuid;
@@ -27,7 +27,7 @@ impl NetworkHandler {
                 continue;
             }
 
-            let Ok(data) = Self::serialize_event(event.event) else {
+            let Ok(data) = Self::serialize_event(&event.event) else {
                 warn!("wasn't able to serialize event");
                 continue;
             };
