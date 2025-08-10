@@ -2,7 +2,7 @@
 // Copyright (C) 2025 Crypts of the Lost Team
 
 use super::NetworkHandler;
-use protocol::event::EventKind;
+use protocol::{Targetable, event::EventKind};
 use std::net::SocketAddr;
 use tokio::sync::broadcast::Receiver;
 use tracing::{error, warn};
@@ -16,18 +16,18 @@ impl NetworkHandler {
         let id = conn_tx.id();
         let mut uuid = 0;
         while let Ok(event) = dispatcher_rx.recv().await {
-            if let EventKind::JoinAccept(join_accept) = &event.event {
+            if let EventKind::JoinAccept(join_accept) = &event {
                 if join_accept.ip != addr {
                     continue;
                 }
                 uuid = join_accept.uuid;
             }
 
-            if !event.target.is_recipient(&uuid) {
+            if !event.is_recipient(&uuid) {
                 continue;
             }
 
-            let Ok(data) = Self::serialize_event(&event.event) else {
+            let Ok(data) = Self::serialize_event(&event) else {
                 warn!("wasn't able to serialize event");
                 continue;
             };
