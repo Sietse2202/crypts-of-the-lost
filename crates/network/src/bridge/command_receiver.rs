@@ -26,12 +26,12 @@ macro_rules! handle_commands {
     };
 }
 
-const MAX_PER_FRAME: u32 = 100;
+const MAX_PER_TICK: u32 = 100;
 
 pub fn process_incoming_commands(mut recv: ResMut<CommandReceiver>, mut join: EventWriter<Join>) {
     let mut processed = 0;
 
-    while processed < MAX_PER_FRAME {
+    while processed < MAX_PER_TICK {
         let Ok(cmd) = recv.rx.try_recv() else { break };
         handle_commands!(cmd, {
             Join => join

@@ -40,7 +40,7 @@ impl NetworkHandler {
         }
     }
 
-    const MAX_MESSAGE_SIZE: u32 = 1024 * 1024;
+    pub(super) const MAX_MESSAGE_SIZE: u32 = 1024 * 1024;
 
     async fn receive_command(stream: &mut quinn::RecvStream) -> RecvResult {
         let mut len_buf = [0u8; 4];
