@@ -16,11 +16,11 @@ categories = ["games"]
 quinn = "0.11.8"
 rustls-pki-types = "1.12.0"
 dashmap = "6.1.0"
+rmp-serde = "1.3"
 
 thiserror.workspace = true
 tracing.workspace = true
 serde.workspace = true
-rmp-serde.workspace = true
 tokio.workspace = true
 protocol.workspace = true
 bevy.workspace = true
