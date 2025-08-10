@@ -6,10 +6,8 @@
 
 #![expect(missing_docs)]
 
-use std::net::SocketAddr;
-
-use crate::command::CommandInner;
 use bevy::ecs::event::Event;
+use std::net::SocketAddr;
 
 /// The command sent to the server after successful connection to it.
 #[derive(
@@ -29,5 +27,4 @@ pub struct Join {
     pub uuid: u64,
     pub hash: u64,
     pub ip: Option<SocketAddr>, // needed for the network handler
-    pub inner: CommandInner,
 }

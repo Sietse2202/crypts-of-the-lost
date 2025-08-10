@@ -5,21 +5,22 @@
 //! Defines the target type that tells to whom the `Event`
 //! should be sent to.
 
+use crate::event::EventKind;
 use std::collections::HashSet;
 
 /// The target(s) to send the event to.
 #[derive(serde::Deserialize, serde::Serialize, Debug, Eq, PartialEq, Clone)]
 pub enum Target {
     /// Sends the event to everyone
-    All,
+    Everyone,
     /// Sends the event to only one connection
-    One(u64),
+    Player(u64),
     /// Sends the event to a group of connections
     Group(HashSet<u64>),
     /// Sends the event to all but one
-    AllButOne(u64),
+    EveryoneExcept(u64),
     /// Sends the event to all but a group of connections
-    AllBut(HashSet<u64>),
+    EveryoneExceptGroup(HashSet<u64>),
 }
 
 impl Target {
@@ -27,11 +28,23 @@ impl Target {
     #[must_use]
     pub fn is_recipient(&self, other: &u64) -> bool {
         match self {
-            Self::All => true,
-            Self::AllBut(ids) => !ids.contains(other),
-            Self::AllButOne(id) => id != other,
+            Self::Everyone => true,
+            Self::EveryoneExceptGroup(ids) => !ids.contains(other),
+            Self::EveryoneExcept(id) => id != other,
             Self::Group(ids) => ids.contains(other),
-            Self::One(id) => id == other,
+            Self::Player(id) => id == other,
         }
+    }
+}
+
+/// no doc yet
+#[enum_dispatch::enum_dispatch(EventKind)]
+pub trait Targetable {
+    /// Returns the [`Target`] associated with this type
+    fn get_target(&self) -> &Target;
+
+    /// Returns whether the given id is a recipient according to the [`Target`].
+    fn is_recipient(&self, other: &u64) -> bool {
+        self.get_target().is_recipient(other)
     }
 }

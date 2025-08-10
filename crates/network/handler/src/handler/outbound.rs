@@ -1,16 +1,15 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025 Crypts of the Lost Team
 
-use std::net::SocketAddr;
-
 use super::NetworkHandler;
-use protocol::event::{Event, EventKind};
+use protocol::event::EventKind;
+use std::net::SocketAddr;
 use tokio::sync::broadcast::Receiver;
 use tracing::{error, warn};
 
 impl NetworkHandler {
     pub(super) async fn process_outbound(
-        mut dispatcher_rx: Receiver<Event>,
+        mut dispatcher_rx: Receiver<EventKind>,
         mut conn_tx: quinn::SendStream,
         addr: SocketAddr,
     ) {

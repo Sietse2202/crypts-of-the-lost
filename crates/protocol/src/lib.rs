@@ -10,7 +10,11 @@ use bevy::app::Plugin;
 
 pub mod command;
 pub mod event;
-pub mod target;
+mod target;
+
+pub use command::Command;
+pub use event::Event;
+pub use target::{Target, Targetable};
 
 /// bevy plugin for the protocol
 ///
@@ -24,7 +28,7 @@ impl Plugin for Protocol {
         app.add_event::<command::join::Join>();
 
         // Event events
-        app.add_event::<event::join_accept::JoinAccept>()
-            .add_event::<event::player_joined::PlayerJoined>();
+        app.add_event::<event::JoinAccept>()
+            .add_event::<event::PlayerJoined>();
     }
 }

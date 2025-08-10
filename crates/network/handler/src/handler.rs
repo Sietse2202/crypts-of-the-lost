@@ -15,7 +15,7 @@ mod shutdown;
 mod start;
 
 use dashmap::DashMap;
-use protocol::{command::Command, event::Event};
+use protocol::{command::CommandKind, event::EventKind};
 use quinn::{Connection, Endpoint, ServerConfig};
 use std::net::SocketAddr;
 use std::sync::Arc;
@@ -32,9 +32,9 @@ pub struct NetworkHandler {
     /// Active connections mapped by client Address
     connections: Arc<DashMap<SocketAddr, Connection>>,
     /// Channel for sending inbound message to the dispatcher
-    inbound_tx: UnboundedSender<Command>,
+    inbound_tx: UnboundedSender<CommandKind>,
     /// Fan out of the `outbound_rx`
-    broadcast: Sender<Event>,
+    broadcast: Sender<EventKind>,
     /// Server configuration for QUIC
     server_config: ServerConfig,
     /// Socket address to bind to
@@ -51,8 +51,8 @@ impl NetworkHandler {
     pub fn new(
         socket: SocketAddr,
         server_config: ServerConfig,
-        outbound_rx: UnboundedReceiver<Event>,
-        inbound_tx: UnboundedSender<Command>,
+        outbound_rx: UnboundedReceiver<EventKind>,
+        inbound_tx: UnboundedSender<CommandKind>,
     ) -> Self {
         let broadcast = Self::start_fan_out(outbound_rx);
         Self {
@@ -65,8 +65,8 @@ impl NetworkHandler {
         }
     }
 
-    fn start_fan_out(mut outbound_rx: UnboundedReceiver<Event>) -> Sender<Event> {
-        let (broadcast_tx, _) = broadcast::channel::<Event>(1024);
+    fn start_fan_out(mut outbound_rx: UnboundedReceiver<EventKind>) -> Sender<EventKind> {
+        let (broadcast_tx, _) = broadcast::channel::<EventKind>(1024);
 
         let broadcast_tx_clone = broadcast_tx.clone();
         tokio::spawn(async move {
