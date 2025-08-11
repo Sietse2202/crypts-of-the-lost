@@ -5,16 +5,19 @@
 //! This module contains all types used for the communication from the client
 //! to the server.
 
-mod inner;
 pub mod join;
 
-use bincode::{Decode, Encode};
-pub use inner::CommandInner;
-
 /// Command from the client to the server
-#[derive(Encode, Decode, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
+#[derive(
+    serde::Deserialize, serde::Serialize, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash,
+)]
+#[enum_dispatch::enum_dispatch]
 #[non_exhaustive]
-pub enum Command {
+pub enum CommandKind {
     /// New connection
     Join(join::Join),
 }
+
+/// Trait to be implemented by each command
+#[enum_dispatch::enum_dispatch(CommandKind)]
+pub trait Command {}

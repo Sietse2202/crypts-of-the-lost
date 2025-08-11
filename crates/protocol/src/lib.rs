@@ -4,6 +4,31 @@
 //! # Protocol
 //! Defines the communication between the server and client.
 
+#![expect(clippy::multiple_crate_versions)]
+
+use bevy::app::Plugin;
+
 pub mod command;
 pub mod event;
-pub mod target;
+mod target;
+
+pub use command::Command;
+pub use event::Event;
+pub use target::{Target, Targetable};
+
+/// bevy plugin for the protocol
+///
+/// adds all events and commands as bevy events
+#[derive(Debug)]
+pub struct Protocol;
+
+impl Plugin for Protocol {
+    fn build(&self, app: &mut bevy::app::App) {
+        // Command events
+        app.add_event::<command::join::Join>();
+
+        // Event events
+        app.add_event::<event::JoinAccept>()
+            .add_event::<event::PlayerJoined>();
+    }
+}

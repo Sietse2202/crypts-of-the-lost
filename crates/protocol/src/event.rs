@@ -5,19 +5,25 @@
 //! This module contains all types used for the communication from the server
 //! to the client.
 
-mod inner;
-pub mod join_accept;
-pub mod player_joined;
+mod join_accept;
+mod player_joined;
 
-use bincode::{Decode, Encode};
-pub use inner::EventInner;
+pub use join_accept::JoinAccept;
+pub use player_joined::PlayerJoined;
+
+use crate::Targetable;
 
 /// Message from the server, to the client
-#[derive(Encode, Decode, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
+#[derive(serde::Deserialize, serde::Serialize, Debug, Eq, PartialEq, Clone)]
+#[enum_dispatch::enum_dispatch]
 #[non_exhaustive]
-pub enum Event {
+pub enum EventKind {
     /// Gets send when a new player joins
-    JoinAccept(join_accept::JoinAccept),
+    JoinAccept(JoinAccept),
     /// A new player joined
-    PlayerJoined(player_joined::PlayerJoined),
+    PlayerJoined(PlayerJoined),
 }
+
+/// Each event needs to have this trait
+#[enum_dispatch::enum_dispatch(EventKind)]
+pub trait Event: Targetable {}

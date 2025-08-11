@@ -13,9 +13,12 @@ keywords = ["server", "game"]
 categories = ["games"]
 
 [dependencies]
-clap = { workspace = true }
-network = { workspace = true }
-protocol = { workspace = true }
+clap.workspace = true
+protocol.workspace = true
+network.workspace = true
+bevy.workspace = true
+config.workspace = true
+tokio.workspace = true
 
 [lints]
 workspace = true

@@ -2,8 +2,8 @@
 // Copyright (C) 2025 Crypts of the Lost Team
 
 use super::NetworkHandler;
-use crate::envelope::{InboundMessage, OutboundMessage};
 use dashmap::DashMap;
+use protocol::{command::CommandKind, event::EventKind};
 use quinn::Connection;
 use std::{net::SocketAddr, sync::Arc};
 use tokio::sync::{broadcast::Receiver, mpsc::UnboundedSender};
@@ -13,8 +13,8 @@ impl NetworkHandler {
     pub(super) async fn handle_connection(
         connection: Connection,
         connections: Arc<DashMap<SocketAddr, Connection>>,
-        handler_tx: UnboundedSender<InboundMessage>,
-        handler_rx: Receiver<OutboundMessage>,
+        handler_tx: UnboundedSender<CommandKind>,
+        handler_rx: Receiver<EventKind>,
     ) {
         let addr = connection.remote_address();
         let Ok((tx, rx)) = connection.open_bi().await else {

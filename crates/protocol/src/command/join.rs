@@ -4,12 +4,27 @@
 //! # Join
 //! For information about the protocol please go to the following [url](https://Sietse2202.github.io/crypts-of-the-lost/).
 
-use crate::command::CommandInner;
+#![expect(missing_docs)]
+
+use bevy::ecs::event::Event;
+use std::net::SocketAddr;
 
 /// The command sent to the server after successful connection to it.
 #[derive(
-    bincode::Encode, bincode::Decode, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash,
+    serde::Deserialize,
+    serde::Serialize,
+    Debug,
+    Ord,
+    PartialOrd,
+    Eq,
+    PartialEq,
+    Copy,
+    Clone,
+    Hash,
+    Event,
 )]
 pub struct Join {
-    inner: CommandInner,
+    pub uuid: u64,
+    pub hash: u64,
+    pub ip: Option<SocketAddr>, // needed for the network handler
 }

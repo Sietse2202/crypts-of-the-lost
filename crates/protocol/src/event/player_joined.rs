@@ -4,12 +4,16 @@
 //! # `PlayerJoined`
 //! For information about the protocol please go to the following [url](https://Sietse2202.github.io/crypts-of-the-lost/).
 
-use crate::event::EventInner;
+use bevy::ecs::event::Event;
 
 /// New player joined. Gets sent to everyone except the new player
-#[derive(
-    bincode::Encode, bincode::Decode, Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash,
-)]
-pub struct PlayerJoined {
-    inner: EventInner,
+#[derive(serde::Deserialize, serde::Serialize, Debug, Eq, PartialEq, Clone, Event)]
+pub struct PlayerJoined {}
+
+impl crate::Event for PlayerJoined {}
+
+impl crate::Targetable for PlayerJoined {
+    fn get_target(&self) -> crate::Target {
+        crate::Target::Everyone
+    }
 }

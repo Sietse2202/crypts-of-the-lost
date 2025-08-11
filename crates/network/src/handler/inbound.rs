@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025 Crypts of the Lost Team
 
-use super::NetworkHandler;
-use crate::envelope::InboundMessage;
-use quinn::{ReadExactError, RecvStream};
 use std::net::SocketAddr;
+
+use super::NetworkHandler;
+use protocol::command::CommandKind;
+use quinn::{ReadExactError, RecvStream};
 use tokio::sync::mpsc::UnboundedSender;
 use tracing::{error, warn};
 
@@ -12,7 +13,7 @@ type RecvResult = Option<Result<Vec<u8>, ReadExactError>>;
 
 impl NetworkHandler {
     pub(super) async fn process_inbound(
-        dispatcher_tx: UnboundedSender<InboundMessage>,
+        dispatcher_tx: UnboundedSender<CommandKind>,
         mut conn_rx: RecvStream,
         addr: SocketAddr,
     ) {
@@ -21,18 +22,25 @@ impl NetworkHandler {
             let Ok(data) = data else {
                 continue;
             };
-            let Ok(cmd) = Self::deserialize_command(&data) else {
+            let Ok(mut cmd) = Self::deserialize_command(&data) else {
                 warn!(
                     "[Stream {id}] wasn't able to deserialize following data to `Command`: {data:?}"
                 );
                 continue;
             };
-            let msg = InboundMessage::new(addr, cmd);
-            if let Err(e) = dispatcher_tx.send(msg) {
+
+            if let CommandKind::Join(mut join) = cmd {
+                join.ip = Some(addr);
+                cmd = CommandKind::Join(join);
+            }
+
+            if let Err(e) = dispatcher_tx.send(cmd) {
                 warn!("[Stream {id}] failed to send data to dispatcher: {e}");
             }
         }
     }
+
+    pub(super) const MAX_MESSAGE_SIZE: u32 = 1024 * 1024;
 
     async fn receive_command(stream: &mut quinn::RecvStream) -> RecvResult {
         let mut len_buf = [0u8; 4];
@@ -41,6 +49,11 @@ impl NetworkHandler {
         }
 
         let len = u32::from_be_bytes(len_buf);
+        if len > Self::MAX_MESSAGE_SIZE {
+            warn!("Message to large: {len} bytes");
+            return None;
+        }
+
         let mut data = vec![0u8; len as usize];
         if let Err(e) = Self::read_exact(stream, &mut data).await {
             return e;

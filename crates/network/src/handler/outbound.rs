@@ -2,32 +2,46 @@
 // Copyright (C) 2025 Crypts of the Lost Team
 
 use super::NetworkHandler;
-use crate::envelope::OutboundMessage;
+use protocol::{Targetable, event::EventKind};
 use std::net::SocketAddr;
 use tokio::sync::broadcast::Receiver;
 use tracing::{error, warn};
 
 impl NetworkHandler {
+    #[expect(clippy::cognitive_complexity)]
     pub(super) async fn process_outbound(
-        mut dispatcher_rx: Receiver<OutboundMessage>,
+        mut dispatcher_rx: Receiver<EventKind>,
         mut conn_tx: quinn::SendStream,
         addr: SocketAddr,
     ) {
         let id = conn_tx.id();
+        let mut uuid = 0;
         while let Ok(event) = dispatcher_rx.recv().await {
-            let OutboundMessage { event, target } = event;
-            if !target.is_recipient(&addr) {
+            if let EventKind::JoinAccept(join_accept) = &event {
+                if join_accept.ip != addr {
+                    continue;
+                }
+                uuid = join_accept.uuid;
+            }
+
+            if !event.is_recipient(&uuid) {
                 continue;
             }
 
-            let Ok(data) = Self::serialize_event(event) else {
+            let Ok(data) = Self::serialize_event(&event) else {
                 warn!("wasn't able to serialize event");
                 continue;
             };
 
+            let data_length = data.len();
+            if data_length > Self::MAX_MESSAGE_SIZE as usize {
+                warn!("Message to large: {data_length} bytes");
+                continue;
+            }
+
             #[expect(clippy::cast_possible_truncation)]
-            let len = u32::to_be_bytes(data.len() as u32); // event data will never be 4 GiB big
-            let mut buf = Vec::with_capacity(len.len() + data.len());
+            let len = u32::to_be_bytes(data_length as u32); // won't run if size is over 1MB which is under the max u32 size
+            let mut buf = Vec::with_capacity(data_length + 4);
             buf.extend_from_slice(&len);
             buf.extend_from_slice(&data);
 
