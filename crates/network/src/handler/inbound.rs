@@ -12,6 +12,7 @@ use tracing::{error, warn};
 type RecvResult = Option<Result<Vec<u8>, ReadExactError>>;
 
 impl NetworkHandler {
+    #[tracing::instrument]
     pub(super) async fn process_inbound(
         dispatcher_tx: UnboundedSender<CommandKind>,
         mut conn_rx: RecvStream,

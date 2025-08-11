@@ -10,6 +10,7 @@ use tokio::sync::{broadcast::Receiver, mpsc::UnboundedSender};
 use tracing::{error, info};
 
 impl NetworkHandler {
+    #[tracing::instrument]
     pub(super) async fn handle_connection(
         connection: Connection,
         connections: Arc<DashMap<SocketAddr, Connection>>,

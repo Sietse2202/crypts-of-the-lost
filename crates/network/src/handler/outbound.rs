@@ -8,7 +8,7 @@ use tokio::sync::broadcast::Receiver;
 use tracing::{error, warn};
 
 impl NetworkHandler {
-    #[expect(clippy::cognitive_complexity)]
+    #[tracing::instrument]
     pub(super) async fn process_outbound(
         mut dispatcher_rx: Receiver<EventKind>,
         mut conn_tx: quinn::SendStream,
