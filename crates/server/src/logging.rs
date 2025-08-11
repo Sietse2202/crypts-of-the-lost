@@ -22,6 +22,7 @@ pub fn setup_logging(config: &LoggingConfig) {
 
     // set output format
     match config.output_format {
+        OutputFormat::Default => subscriber_builder.init(),
         OutputFormat::Pretty => subscriber_builder.pretty().init(),
         OutputFormat::Json => subscriber_builder.json().init(),
     }

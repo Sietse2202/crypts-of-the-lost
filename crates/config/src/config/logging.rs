@@ -16,6 +16,8 @@ pub struct LoggingConfig {
 /// The formatting of the output.
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub enum OutputFormat {
+    /// Default
+    Default,
     /// Human-readable
     Pretty,
     /// Machine-readable JSON
@@ -40,7 +42,7 @@ pub enum LogLevel {
 impl Default for LoggingConfig {
     fn default() -> Self {
         Self {
-            output_format: OutputFormat::Pretty,
+            output_format: OutputFormat::Default,
             log_level: LogLevel::Info,
         }
     }
