@@ -129,7 +129,7 @@ fn check_dependencies(
     let mut hash_cache = HashMap::new();
 
     for (dep_name, dep_data) in mod_data.toml_data.dependencies.clone().unwrap_or_default() {
-        if !dependencies_match(&dep_name, &dep_data, &loaded_mods, &mut hash_cache) {
+        if !dependencies_match(&dep_name, &dep_data, loaded_mods, &mut hash_cache) {
             let msg = format!(
                 "Mod `{}` requires mod `{}`, but it is not loaded",
                 mod_name, &dep_name
@@ -141,7 +141,7 @@ fn check_dependencies(
     for (conflict_name, conflict_versions) in
         mod_data.toml_data.conflicts.clone().unwrap_or_default()
     {
-        if conflict_occurs(&conflict_name, &conflict_versions, &loaded_mods) {
+        if conflict_occurs(&conflict_name, &conflict_versions, loaded_mods) {
             let msg = format!("Mod `{}` conflicts with mod `{}`", mod_name, &conflict_name);
             Err(msg)?;
         }
@@ -169,30 +169,17 @@ fn dependencies_match(
             return false;
         };
 
-        let hash = if hash_cache.contains_key(&(
+        let cache_key = (
             mod_data.toml_data.data.name.clone(),
             mod_data.toml_data.data.version.clone(),
-        )) {
-            hash_cache
-                .get(&(
-                    mod_data.toml_data.data.name.clone(),
-                    mod_data.toml_data.data.version.clone(),
-                ))
-                .unwrap()
-                .clone()
-        } else {
-            let hash = paq::hash_source(&mod_data.path, false).to_string();
-            hash_cache.insert(
-                (
-                    mod_data.toml_data.data.name.clone(),
-                    mod_data.toml_data.data.version.clone(),
-                ),
-                hash.clone(),
-            );
-            hash
-        };
+        );
 
-        let names_match = dependency_name == &mod_data.toml_data.data.name;
+        let hash = hash_cache
+            .entry(cache_key)
+            .or_insert_with(|| paq::hash_source(&mod_data.path, false).to_string())
+            .clone();
+
+        let names_match = dependency_name == mod_data.toml_data.data.name;
         let versions_match = dep_version == version;
         let hashes_match = hash == dependency_data.checksum;
 
@@ -200,12 +187,8 @@ fn dependencies_match(
     })
 }
 
-fn conflict_occurs(
-    conflict_name: &str,
-    conflict_versions: &String,
-    loaded_mods: &[ModData],
-) -> bool {
-    let Ok(conflict_versions) = semver::VersionReq::parse(&conflict_versions) else {
+fn conflict_occurs(conflict_name: &str, conflict_versions: &str, loaded_mods: &[ModData]) -> bool {
+    let Ok(conflict_versions) = semver::VersionReq::parse(conflict_versions) else {
         return false;
     };
 
@@ -214,13 +197,14 @@ fn conflict_occurs(
             return false;
         };
 
-        let names_match = conflict_name == &mod_data.toml_data.data.name;
+        let names_match = conflict_name == mod_data.toml_data.data.name;
         let versions_match = conflict_versions.matches(&version);
 
         names_match && versions_match
     })
 }
 
+#[expect(clippy::todo)]
 fn run_mod(
     _app: &App,
     _mod_data: &ModData,
