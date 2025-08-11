@@ -4,14 +4,25 @@
 //! # Logging
 //! This module sets up the logging.
 
+use config::config::logging::{LogLevel, LoggingConfig, OutputFormat};
 use tracing::Level;
 use tracing_subscriber::FmtSubscriber;
 
-#[expect(clippy::expect_used)]
-pub fn setup_logging() {
-    let subscriber = FmtSubscriber::builder()
-        .with_max_level(Level::TRACE)
-        .finish();
+pub fn setup_logging(config: &LoggingConfig) {
+    let mut subscriber_builder = FmtSubscriber::builder();
 
-    tracing::subscriber::set_global_default(subscriber).expect("setting default subscriber failed");
+    // set max log level
+    subscriber_builder = match config.log_level {
+        LogLevel::Trace => subscriber_builder.with_max_level(Level::TRACE),
+        LogLevel::Debug => subscriber_builder.with_max_level(Level::DEBUG),
+        LogLevel::Info => subscriber_builder.with_max_level(Level::INFO),
+        LogLevel::Warn => subscriber_builder.with_max_level(Level::WARN),
+        LogLevel::Error => subscriber_builder.with_max_level(Level::ERROR),
+    };
+
+    // set output format
+    match config.output_format {
+        OutputFormat::Pretty => subscriber_builder.pretty().init(),
+        OutputFormat::Json => subscriber_builder.json().init(),
+    }
 }
