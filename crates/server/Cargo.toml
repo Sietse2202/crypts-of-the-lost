@@ -19,6 +19,8 @@ network.workspace = true
 bevy.workspace = true
 config.workspace = true
 tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber = "0.3.19"
 
 [lints]
 workspace = true

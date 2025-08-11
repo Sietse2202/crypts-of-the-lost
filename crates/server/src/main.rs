@@ -3,14 +3,14 @@
 
 //! # Server
 //! This binary crate exists as the package containing the entire server side logic.
-//! This includes but is not limited to:
-//! - CLI logic
-//! - The calling of functions from other crates in the workspace
 
 #![expect(clippy::multiple_crate_versions)]
 
+mod logging;
+
 use bevy::prelude::*;
 use config::parse_config;
+use logging::setup_logging;
 use network::Network;
 use protocol::Protocol;
 use std::time::Duration;
@@ -19,6 +19,8 @@ const TPS: f64 = 16.;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    setup_logging();
+
     let config = parse_config()?;
 
     App::new()
