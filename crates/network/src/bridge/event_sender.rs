@@ -21,7 +21,6 @@ macro_rules! send_all_events {
     };
 }
 
-#[expect(clippy::needless_pass_by_value)]
 pub fn process_outbound_events(
     sender: Res<EventSender>,
     mut join_accept: EventReader<JoinAccept>,

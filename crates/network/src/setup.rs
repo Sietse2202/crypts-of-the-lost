@@ -15,7 +15,6 @@ use protocol::{command::CommandKind, event::EventKind};
 use tracing::{error, info};
 
 #[expect(clippy::expect_used)]
-#[expect(clippy::needless_pass_by_value)]
 pub fn setup(mut commands: Commands, config: Res<Config>) {
     info!("Setting up network");
 

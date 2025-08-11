@@ -49,6 +49,7 @@ nursery = "deny"
 suspicious = "deny"
 complexity = "deny"
 style = "deny"
+needless_pass_by_value = { level = "allow", priority = 1 }
 perf = "deny"
 cargo = "deny"
 pedantic = "warn"
