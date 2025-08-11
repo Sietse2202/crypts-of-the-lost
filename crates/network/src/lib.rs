@@ -28,7 +28,6 @@ pub struct Network;
 impl Plugin for Network {
     fn build(&self, app: &mut bevy::app::App) {
         app.add_systems(Startup, setup)
-            .add_systems(Update, process_incoming_commands)
-            .add_systems(Update, process_outbound_events);
+            .add_systems(Update, (process_incoming_commands, process_outbound_events));
     }
 }

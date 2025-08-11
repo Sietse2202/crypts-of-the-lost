@@ -17,7 +17,8 @@ use std::time::Duration;
 
 const TPS: f64 = 16.;
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let config = parse_config()?;
 
     App::new()
