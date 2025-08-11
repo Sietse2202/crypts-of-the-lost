@@ -2,8 +2,14 @@
 // Copyright (C) 2025 Crypts of the Lost Team
 
 use std::collections::HashMap;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use tracing::warn;
+
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct ModData {
+    pub path: PathBuf,
+    pub toml_data: ModToml,
+}
 
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone, Default, PartialEq, Eq)]
 #[serde(rename_all = "kebab-case")]
@@ -58,7 +64,7 @@ pub struct DependencyData {
     pub checksum: String,
 }
 
-pub fn get_mods() -> Result<Vec<ModToml>, Box<dyn std::error::Error>> {
+pub fn get_mods() -> Result<Vec<ModData>, Box<dyn std::error::Error>> {
     let mut mods = Vec::new();
 
     for entry in std::fs::read_dir(crate::MOD_DIR)? {
@@ -82,7 +88,12 @@ pub fn get_mods() -> Result<Vec<ModToml>, Box<dyn std::error::Error>> {
         let toml_str = std::fs::read_to_string(toml_path)?;
         let toml: ModToml = toml::from_str(&toml_str)?;
 
-        mods.push(toml);
+        let mod_data = ModData {
+            path: entry.path(),
+            toml_data: toml,
+        };
+
+        mods.push(mod_data);
     }
 
     Ok(mods)
