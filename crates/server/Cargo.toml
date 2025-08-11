@@ -18,6 +18,7 @@ protocol.workspace = true
 network.workspace = true
 bevy.workspace = true
 config.workspace = true
+tokio.workspace = true
 
 [lints]
 workspace = true

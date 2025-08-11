@@ -38,7 +38,7 @@ pub fn setup(mut commands: Commands, config: Res<Config>) {
     tokio::spawn(async move {
         if let Err(e) = handler.start().await {
             error!("Failed to start network handler: {e}");
-            panic!("Server cannot continue without a network handler")
+            std::process::exit(1);
         }
     });
 

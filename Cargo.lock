@@ -1437,6 +1437,7 @@ dependencies = [
  "config",
  "network",
  "protocol",
+ "tokio",
 ]
 
 [[package]]

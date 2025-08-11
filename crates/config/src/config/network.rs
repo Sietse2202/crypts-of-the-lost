@@ -24,7 +24,7 @@ impl Default for NetworkConfig {
     #[expect(clippy::unwrap_used)]
     fn default() -> Self {
         Self {
-            socket: "0.0.0.0".parse().unwrap(),
+            socket: "0.0.0.0:1234".parse().unwrap(),
             certs: "certs.pem".parse().unwrap(),
             key: "key.pem".parse().unwrap(),
         }
