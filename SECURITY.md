@@ -2,9 +2,9 @@
 
 ## Supported Versions
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :x: |
+| Version | Supported |
+|---------|-----------|
+| 5.1.x   | :x:       |
 
 ## Reporting a Vulnerability
 
