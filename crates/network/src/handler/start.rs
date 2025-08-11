@@ -14,7 +14,7 @@ impl NetworkHandler {
     ///
     /// # Errors
     /// Returns an error if the endpoint cannot be created or bound to the socket.
-    #[tracing::instrument(skip_all)]
+    #[tracing::instrument]
     pub async fn start(&mut self) -> Result<(), HandlerError> {
         info!("starting the networkhandler and listening to connections");
 
