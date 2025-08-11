@@ -10,6 +10,7 @@ use tracing::warn;
 pub struct ModToml {
     pub data: Data,
     pub dependencies: Option<HashMap<String, DependencyData>>,
+    pub conflicts: Option<HashMap<String, String>>,
 }
 
 #[derive(

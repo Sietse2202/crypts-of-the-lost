@@ -15,9 +15,12 @@ categories = ["games"]
 [dependencies]
 bevy = { workspace = true }
 tracing = { workspace = true }
-rhai = "1.22.2"
+rhai = { version = "1.22.2", features = ["internals"] }
 serde = { workspace = true }
 toml = "0.9.3"
+paq = "1.1.1"
+semver = "1.0.26"
+sysinfo = "0.37.0"
 
 [lints]
 workspace = true

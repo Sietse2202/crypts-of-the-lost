@@ -12,10 +12,12 @@ pub(crate) mod rhai;
 pub(crate) mod toml;
 
 use crate::rhai::engine::get_default_engine;
-use crate::toml::{ModData, get_mods};
-use ::rhai::Engine;
+use crate::toml::{DependencyData, ModData, get_mods};
+use ::rhai::{Engine, ImmutableString};
 use bevy::app::App;
 use bevy::prelude::Plugin;
+use std::collections::{HashMap, HashSet};
+use std::rc::Rc;
 use tracing::error;
 
 /// The mod directory in relation to the server root folder
@@ -52,13 +54,60 @@ impl Plugin for ModdingPlugin {
         // PANIC: if it is Err, we have already returned
         let mods = mods.unwrap();
 
+        let mut hashes = Vec::with_capacity(mods.len());
+
         for mod_data in &mods {
-            if let Err(e) = check_dependencies(mod_data, mods.iter()) {
-                error!("{}", e);
-                break;
+            if let Err(e) = check_dependencies(mod_data, &mods) {
+                error!("Failed loading mods: \"{e}\", aborting all mod loading");
+                return;
             }
 
-            let engine = get_default_engine(mod_data.toml_data.data.name.as_str());
+            let hash = paq::hash_source(&mod_data.path, false).to_string();
+            hashes.push(hash);
+        }
+
+        let mod_data_list = Rc::new(
+            mods.iter()
+                .zip(hashes.iter())
+                .map(|(m, hash)| {
+                    (
+                        m.toml_data.data.name.clone().into(),
+                        m.toml_data.data.version.clone().into(),
+                        hash.into(),
+                    )
+                })
+                .collect::<HashSet<(ImmutableString, ImmutableString, ImmutableString)>>(),
+        );
+
+        for mod_data in &mods {
+            let mod_data_list_clone = mod_data_list.clone();
+
+            let permitted_mods: HashSet<(ImmutableString, ImmutableString, ImmutableString)> =
+                mod_data
+                    .toml_data
+                    .dependencies
+                    .clone()
+                    .unwrap_or_default()
+                    .into_iter()
+                    .filter(|(_, dep)| dep.optional)
+                    .map(|(name, dep)| (name.into(), dep.version.into(), dep.checksum.into()))
+                    .collect();
+
+            let is_mod_enabled = Box::new(
+                move |name: ImmutableString,
+                      version: ImmutableString,
+                      checksum: ImmutableString|
+                      -> Option<bool> {
+                    if !permitted_mods.contains(&(name.clone(), version.clone(), checksum.clone()))
+                    {
+                        return None;
+                    }
+
+                    Some(mod_data_list_clone.contains(&(name, version, checksum)))
+                },
+            );
+
+            let engine = get_default_engine(mod_data.toml_data.data.name.as_str(), is_mod_enabled);
 
             if let Err(e) = run_mod(app, mod_data, &engine) {
                 error!("Failed to run mod: {}", e);
@@ -67,38 +116,115 @@ impl Plugin for ModdingPlugin {
     }
 }
 
-fn check_dependencies<'a>(
+fn check_dependencies(
     mod_data: &ModData,
-    mut mods: impl Iterator<Item = &'a ModData>,
+    loaded_mods: &[ModData],
 ) -> Result<(), Box<dyn std::error::Error>> {
-    if let Some(deps) = &mod_data.toml_data.dependencies {
-        for (name, data) in deps {
-            if data.optional {
-                continue;
-            }
+    if semver::Version::parse(mod_data.toml_data.data.version.as_str()).is_err() {
+        Err("Invalid version")?;
+    }
 
-            if !mods.any(|m| {
-                m.toml_data.data.name.as_str() == name && m.toml_data.data.version == data.version
-            }) {
-                let msg = format!(
-                    "Mod `{}` depends on mod `{}`, but it is not loaded",
-                    mod_data.toml_data.data.name.as_str(),
-                    name
-                );
-                Err(msg)?;
-            }
+    let mod_name: &str = &mod_data.toml_data.data.name;
+
+    let mut hash_cache = HashMap::new();
+
+    for (dep_name, dep_data) in mod_data.toml_data.dependencies.clone().unwrap_or_default() {
+        if !dependencies_match(&dep_name, &dep_data, &loaded_mods, &mut hash_cache) {
+            let msg = format!(
+                "Mod `{}` requires mod `{}`, but it is not loaded",
+                mod_name, &dep_name
+            );
+            Err(msg)?;
+        }
+    }
+
+    for (conflict_name, conflict_versions) in
+        mod_data.toml_data.conflicts.clone().unwrap_or_default()
+    {
+        if conflict_occurs(&conflict_name, &conflict_versions, &loaded_mods) {
+            let msg = format!("Mod `{}` conflicts with mod `{}`", mod_name, &conflict_name);
+            Err(msg)?;
         }
     }
 
     Ok(())
 }
 
+fn dependencies_match(
+    dependency_name: &str,
+    dependency_data: &DependencyData,
+    loaded_mods: &[ModData],
+    hash_cache: &mut HashMap<(String, String), String>,
+) -> bool {
+    if dependency_data.optional {
+        return true;
+    }
+
+    let Ok(dep_version) = semver::Version::parse(&dependency_data.version) else {
+        return false;
+    };
+
+    loaded_mods.iter().any(|mod_data| {
+        let Ok(version) = semver::Version::parse(&mod_data.toml_data.data.version) else {
+            return false;
+        };
+
+        let hash = if hash_cache.contains_key(&(
+            mod_data.toml_data.data.name.clone(),
+            mod_data.toml_data.data.version.clone(),
+        )) {
+            hash_cache
+                .get(&(
+                    mod_data.toml_data.data.name.clone(),
+                    mod_data.toml_data.data.version.clone(),
+                ))
+                .unwrap()
+                .clone()
+        } else {
+            let hash = paq::hash_source(&mod_data.path, false).to_string();
+            hash_cache.insert(
+                (
+                    mod_data.toml_data.data.name.clone(),
+                    mod_data.toml_data.data.version.clone(),
+                ),
+                hash.clone(),
+            );
+            hash
+        };
+
+        let names_match = dependency_name == &mod_data.toml_data.data.name;
+        let versions_match = dep_version == version;
+        let hashes_match = hash == dependency_data.checksum;
+
+        names_match && versions_match && hashes_match
+    })
+}
+
+fn conflict_occurs(
+    conflict_name: &str,
+    conflict_versions: &String,
+    loaded_mods: &[ModData],
+) -> bool {
+    let Ok(conflict_versions) = semver::VersionReq::parse(&conflict_versions) else {
+        return false;
+    };
+
+    loaded_mods.iter().any(|mod_data| {
+        let Ok(version) = semver::Version::parse(&mod_data.toml_data.data.version) else {
+            return false;
+        };
+
+        let names_match = conflict_name == &mod_data.toml_data.data.name;
+        let versions_match = conflict_versions.matches(&version);
+
+        names_match && versions_match
+    })
+}
+
 fn run_mod(
     _app: &App,
     _mod_data: &ModData,
-    engine: &Engine,
+    _engine: &Engine,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    engine.run_with_scope(&mut rhai::scope::get_default_scope(), "")?;
-
-    Ok(())
+    todo!();
 }
