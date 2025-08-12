@@ -13,7 +13,6 @@ keywords = ["server", "game"]
 categories = ["games"]
 
 [dependencies]
-clap.workspace = true
 protocol.workspace = true
 network.workspace = true
 bevy.workspace = true
