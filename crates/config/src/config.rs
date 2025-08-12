@@ -5,9 +5,10 @@
 //! Defines the `Config` struct used for the game server. Will be read from
 //! a TOML file and be used as a resource in bevy.
 
+pub mod logging;
 pub mod network;
 
-use crate::config::network::NetworkConfig;
+use crate::config::{logging::LoggingConfig, network::NetworkConfig};
 use bevy::ecs::resource::Resource;
 
 /// The main `Config` struct used to configure the server.
@@ -17,6 +18,8 @@ pub struct Config {
     pub max_players: u32,
     /// Network settings
     pub network: NetworkConfig,
+    /// Logging config
+    pub logging: LoggingConfig,
 }
 
 impl Default for Config {
@@ -24,6 +27,7 @@ impl Default for Config {
         Self {
             max_players: 100,
             network: NetworkConfig::default(),
+            logging: LoggingConfig::default(),
         }
     }
 }
