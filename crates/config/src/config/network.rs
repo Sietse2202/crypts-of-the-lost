@@ -7,16 +7,13 @@
 use std::{net::SocketAddr, path::PathBuf};
 
 /// `NetworkConfig` struct for setting concerning the network systems
-#[derive(Debug, serde::Deserialize, clap::Args)]
+#[derive(Debug, Clone, serde::Deserialize)]
 pub struct NetworkConfig {
     /// Socket to bind the server to
-    #[arg(long)]
     pub socket: SocketAddr,
     /// Path to the TLS certificates (self- or externally-signed)
-    #[arg(long)]
     pub certs: PathBuf,
     /// Path to the TLS private key (self- or externally-signed)
-    #[arg(long)]
     pub key: PathBuf,
 }
 

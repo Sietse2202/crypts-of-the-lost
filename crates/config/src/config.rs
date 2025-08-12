@@ -19,7 +19,6 @@ pub struct Config {
     /// Network settings
     pub network: NetworkConfig,
     /// Logging config
-    #[serde(default)]
     pub logging: LoggingConfig,
 }
 

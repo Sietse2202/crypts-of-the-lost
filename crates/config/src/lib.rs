@@ -10,7 +10,5 @@
 pub mod config;
 pub use config::Config;
 
-mod cli;
-
 mod parse;
 pub use parse::parse_config;
