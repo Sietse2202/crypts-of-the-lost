@@ -16,6 +16,7 @@ toml = "0.9.2"
 bevy.workspace = true
 figment = { version = "0.10.19", features = ["toml"] }
 tracing.workspace = true
+gonfig = "0.1.2"
 
 [lints]
 workspace = true

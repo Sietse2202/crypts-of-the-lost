@@ -9,7 +9,7 @@ use crate::config::network::NetworkConfig;
 use std::path::PathBuf;
 
 /// CLI struct to provide the config file and overwrite settings from it.
-#[derive(Debug, clap::Parser, serde::Serialize)]
+#[derive(Debug, clap::Parser)]
 #[command(author = "Crypts of the Lost")]
 pub struct Cli {
     /// The path to the config file

@@ -12,13 +12,14 @@ use crate::config::{logging::LoggingConfig, network::NetworkConfig};
 use bevy::ecs::resource::Resource;
 
 /// The main `Config` struct used to configure the server.
-#[derive(Debug, Resource, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Resource, serde::Deserialize)]
 pub struct Config {
     /// Maximum amount of players on the server
     pub max_players: u32,
     /// Network settings
     pub network: NetworkConfig,
     /// Logging config
+    #[serde(default)]
     pub logging: LoggingConfig,
 }
 

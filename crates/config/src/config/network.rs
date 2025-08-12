@@ -7,7 +7,7 @@
 use std::{net::SocketAddr, path::PathBuf};
 
 /// `NetworkConfig` struct for setting concerning the network systems
-#[derive(Debug, serde::Deserialize, serde::Serialize, clap::Args)]
+#[derive(Debug, serde::Deserialize, clap::Args)]
 pub struct NetworkConfig {
     /// Socket to bind the server to
     #[arg(long)]

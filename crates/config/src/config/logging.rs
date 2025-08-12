@@ -5,7 +5,7 @@
 //! Defines the Config used for logging.
 
 /// The config used for setting up logging
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, serde::Deserialize)]
 pub struct LoggingConfig {
     /// The output formatting
     pub output_format: OutputFormat,
@@ -14,7 +14,7 @@ pub struct LoggingConfig {
 }
 
 /// The formatting of the output.
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, serde::Deserialize)]
 pub enum OutputFormat {
     /// Default
     Default,
@@ -25,7 +25,7 @@ pub enum OutputFormat {
 }
 
 /// The log level
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, serde::Deserialize)]
 pub enum LogLevel {
     /// Lowest level, very verbose
     Trace,
