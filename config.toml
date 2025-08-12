@@ -1,1 +1,4 @@
+[network]
 socket = "0.0.0.0:42069"
+certs = "certs.pem"
+key = "key.pem"
