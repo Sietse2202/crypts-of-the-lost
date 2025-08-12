@@ -23,7 +23,7 @@ $ cargo xtask build
 If you wish to self-host, we are working on a book that will go into full detail on that.
 
 ## Contributions
-Contributions are welcome! If you want to contribute, please look at our [contribution guide]()
+Contributions are welcome! If you want to contribute, please look at our [contribution guide](CONTRIBUTING.md)
 
 ## License
 This project is licensed under the GNU Affero General Public License v3.0 or later.
