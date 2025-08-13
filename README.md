@@ -1,4 +1,4 @@
-![Banner](docs/banner.svg)
+![Banner](docs/assets/banner-transparent.svg)
 
 # Crypts of the Lost
 

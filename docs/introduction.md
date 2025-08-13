@@ -1,4 +1,4 @@
-![Banner](banner.svg)
+![Banner](assets/banner-transparent.svg.svg)
 
 # Introduction
 
