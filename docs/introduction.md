@@ -1,3 +1,5 @@
+![Banner](banner.svg)
+
 # Introduction
 
 An MMO Dungeon Crawler Roguelite inspired by [Hypixel Skyblock](https://hypixel.net/categories/skyblock.194/)
