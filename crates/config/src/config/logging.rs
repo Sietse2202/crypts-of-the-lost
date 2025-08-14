@@ -5,16 +5,18 @@
 //! Defines the Config used for logging.
 
 /// The config used for setting up logging
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Deserialize, Default)]
 pub struct LoggingConfig {
     /// The output formatting
+    #[serde(default)]
     pub output_format: OutputFormat,
     /// The maximum log level for the output
+    #[serde(default)]
     pub log_level: LogLevel,
 }
 
 /// The formatting of the output.
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Deserialize)]
 pub enum OutputFormat {
     /// Default
     Default,
@@ -24,8 +26,14 @@ pub enum OutputFormat {
     Json,
 }
 
+impl Default for OutputFormat {
+    fn default() -> Self {
+        Self::Default
+    }
+}
+
 /// The log level
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Deserialize)]
 pub enum LogLevel {
     /// Lowest level, very verbose
     Trace,
@@ -39,11 +47,8 @@ pub enum LogLevel {
     Error,
 }
 
-impl Default for LoggingConfig {
+impl Default for LogLevel {
     fn default() -> Self {
-        Self {
-            output_format: OutputFormat::Default,
-            log_level: LogLevel::Info,
-        }
+        Self::Info
     }
 }

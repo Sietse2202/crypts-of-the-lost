@@ -20,8 +20,6 @@ protocol.path = "crates/protocol"
 network.path = "crates/network"
 config.path = "crates/config"
 
-clap = { version = "4.5.41", features = ["derive"] }
-
 thiserror = "2.0.12"
 tracing = "0.1.41"
 

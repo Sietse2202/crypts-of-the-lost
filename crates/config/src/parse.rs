@@ -3,12 +3,8 @@
 
 //! # Parse
 
-use crate::{Cli, Config};
-use clap::Parser;
-use figment::{
-    Figment, Profile,
-    providers::{Format, Serialized, Toml},
-};
+use crate::Config;
+use konfik::{ConfigLoader, Error};
 
 /// Parses the `Config` struct.
 ///
@@ -18,17 +14,10 @@ use figment::{
 /// # Errors
 ///
 /// Returns an error when deserialization to the `Config` struct failed.
-#[expect(clippy::result_large_err)]
-pub fn parse_config() -> Result<Config, figment::Error> {
-    let cli = Cli::parse();
-
-    let mut figment = Figment::new().merge(Serialized::defaults(Config::default()));
-
-    if let Some(path) = &cli.config {
-        figment = figment.merge(Toml::file(path));
-    }
-
-    figment = figment.merge(Serialized::from(cli, Profile::Default));
-
-    figment.extract()
+pub fn parse_config() -> Result<Config, Error> {
+    ConfigLoader::default()
+        .with_config_file("config.toml")
+        .with_env_prefix("COTL")
+        .with_cli()
+        .load()
 }
