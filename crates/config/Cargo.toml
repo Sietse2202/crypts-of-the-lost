@@ -12,7 +12,7 @@ categories = ["games"]
 [dependencies]
 serde.workspace = true
 bevy.workspace = true
-gonfig = "0.1.2"
+konfik = "0.1"
 
 [lints]
 workspace = true

@@ -4,7 +4,7 @@
 //! # Parse
 
 use crate::Config;
-use gonfig::ConfigBuilder;
+use konfik::{ConfigLoader, Error};
 
 /// Parses the `Config` struct.
 ///
@@ -14,9 +14,10 @@ use gonfig::ConfigBuilder;
 /// # Errors
 ///
 /// Returns an error when deserialization to the `Config` struct failed.
-pub fn parse_config() -> Result<Config, gonfig::Error> {
-    ConfigBuilder::new()
-        .with_file_optional("config.toml")?
+pub fn parse_config() -> Result<Config, Error> {
+    ConfigLoader::default()
+        .with_config_file("config.toml")
+        .with_env_prefix("COTL")
         .with_cli()
-        .build()
+        .load()
 }
